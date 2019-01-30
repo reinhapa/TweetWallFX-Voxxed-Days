@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014-2018 TweetWallFX
+ * Copyright 2019 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.tweetwallfx.vdz.cfp;
 
-import org.tweetwall.devoxx.cfp.test.CFPClientTestBase;
+rootProject.name='tweetwallfx-voxxed-days-zurich'
 
-public class CFPClientTest extends CFPClientTestBase {
+include ':cinema2k'
+project(':cinema2k').name = 'tweetwallfx-voxxed-days-zurich-cinema2k'
 
-    public CFPClientTest() {
-        super("thursday", "e_room6", "XBI-0039");
-    }
+if (file('../TweetWallFX').exists()) {
+//  includeBuild '../TweetWallFX'
 }

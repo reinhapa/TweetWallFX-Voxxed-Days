@@ -30,6 +30,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.tweetwallfx.controls.WordleSkin;
+import org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider;
+import org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.SessionData;
+import org.tweetwallfx.stepengine.api.DataProvider;
+import org.tweetwallfx.stepengine.api.Step;
+import org.tweetwallfx.stepengine.api.StepEngine.MachineContext;
+import org.tweetwallfx.stepengine.api.config.StepEngineSettings;
+import org.tweetwallfx.transitions.FlipInXTransition;
+
 import javafx.animation.ParallelTransition;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
@@ -37,16 +49,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.tweetwallfx.controls.WordleSkin;
-import org.tweetwallfx.controls.dataprovider.DataProvider;
-import org.tweetwallfx.controls.stepengine.Step;
-import org.tweetwallfx.controls.stepengine.StepEngine.MachineContext;
-import org.tweetwallfx.controls.stepengine.config.StepEngineSettings;
-import org.tweetwallfx.controls.transition.FlipInXTransition;
-import org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider;
-import org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.SessionData;
 
 /**
  * Devox 2017 Show Schedule (Flip In) Animation Step
@@ -120,10 +122,6 @@ public class ShowSchedule extends FlipInTweets {
         }
     }
 
-    /**
-     * Implementation of {@link Step.Factory} as Service implementation creating
-     * {@link ShowSchedule}.
-     */
     public static final class Factory implements Step.Factory {
 
         @Override

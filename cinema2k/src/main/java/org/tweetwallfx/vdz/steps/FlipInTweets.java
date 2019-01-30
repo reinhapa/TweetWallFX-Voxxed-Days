@@ -3,23 +3,20 @@
  *
  * Copyright 2017-2018 TweetWallFX
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package org.tweetwallfx.vdz.steps;
 
@@ -27,6 +24,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import org.tweetwallfx.controls.WordleSkin;
+import org.tweetwallfx.stepengine.api.DataProvider;
+import org.tweetwallfx.stepengine.api.Step;
+import org.tweetwallfx.stepengine.api.StepEngine.MachineContext;
+import org.tweetwallfx.stepengine.api.config.StepEngineSettings;
+import org.tweetwallfx.stepengine.dataproviders.TweetUserProfileImageDataProvider;
+import org.tweetwallfx.transitions.FlipInXTransition;
+import org.tweetwallfx.tweet.api.Tweet;
+import org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Transition;
@@ -40,14 +48,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
-import org.tweetwallfx.controls.WordleSkin;
-import org.tweetwallfx.controls.dataprovider.DataProvider;
-import org.tweetwallfx.controls.stepengine.Step;
-import org.tweetwallfx.controls.stepengine.StepEngine.MachineContext;
-import org.tweetwallfx.controls.stepengine.config.StepEngineSettings;
-import org.tweetwallfx.controls.transition.FlipInXTransition;
-import org.tweetwallfx.tweet.api.Tweet;
-import org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider;
 
 /**
  * TweetStream Flip In Animation Step
@@ -56,15 +56,13 @@ import org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider;
  */
 public class FlipInTweets implements Step {
 
-    private static final int MAX_TWEETS = 7;
-
     protected FlipInTweets() {
         // prevent external instantiation
     }
 
     @Override
     public void doStep(final MachineContext context) {
-//        double[] spacing = new double[] {170, 20, 20, 20, 20, 20, 10};
+        // double[] spacing = new double[] {170, 20, 20, 20, 20, 20, 10};
         double[] spacing = new double[] {10, 10, 10, 10, 10, 10, 10, 10};
         double[] maxWidth = new double[] {400, 400, 400, 400, 400, 400, 400, 400};
 
@@ -72,12 +70,15 @@ public class FlipInTweets implements Step {
         final TweetStreamDataProvider dataProvider =
                 context.getDataProvider(TweetStreamDataProvider.class);
 
+        final TweetUserProfileImageDataProvider userImageProvider =
+                context.getDataProvider(TweetUserProfileImageDataProvider.class);
+
         VBox tweetList = getOrCreateTweetList(wordleSkin);
 
         List<Transition> transitions = new ArrayList<>();
 
         // tweet image
-//        addTweetImage(wordleSkin, dataProvider, tweetList, transitions);
+        // addTweetImage(wordleSkin, dataProvider, tweetList, transitions);
 
         tweetList.layoutXProperty()
                 .bind(Bindings.add(
@@ -94,7 +95,8 @@ public class FlipInTweets implements Step {
 
         List<Tweet> tweets = dataProvider.getTweets();
         for (int i = 0; i < Math.min(tweets.size(), tweets.size()); i++) {
-            HBox tweet = createSingleTweetDisplay(tweets.get(i), wordleSkin, maxWidth[i]);
+            HBox tweet = createSingleTweetDisplay(tweets.get(i), userImageProvider, wordleSkin,
+                    maxWidth[i]);
             tweet.setMaxWidth(maxWidth[i] + 64 + 10);
             tweet.getStyleClass().add("tweetDisplay");
             transitions.add(new FlipInXTransition(tweet));
@@ -154,7 +156,8 @@ public class FlipInTweets implements Step {
         return vbox;
     }
 
-    private HBox createSingleTweetDisplay(final Tweet displayTweet, final WordleSkin wordleSkin,
+    private HBox createSingleTweetDisplay(final Tweet displayTweet,
+            final TweetUserProfileImageDataProvider userImageProvider, final WordleSkin wordleSkin,
             final double maxWidth) {
         // shorten tweet text here if needed
         String textWithoutMediaUrls = displayTweet.getDisplayEnhancedText();
@@ -162,8 +165,7 @@ public class FlipInTweets implements Step {
         text.setCache(true);
         text.setCacheHint(CacheHint.SPEED);
         text.getStyleClass().add("tweetText");
-        Image profileImage = wordleSkin.getProfileImageCache()
-                .get(displayTweet.getUser().getBiggerProfileImageUrl());
+        Image profileImage = userImageProvider.getImageBig(displayTweet.getUser());
         ImageView profileImageView = new ImageView(profileImage);
         profileImageView.setSmooth(true);
         profileImageView.setCacheHint(CacheHint.QUALITY);

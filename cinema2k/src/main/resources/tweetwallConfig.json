@@ -19,14 +19,11 @@
                 "stepClassName": "org.tweetwallfx.vdz.steps.ShowSchedule"
             },
             {
-                "stepClassName": "org.tweetwallfx.controls.steps.PauseStep",
+                "stepClassName": "org.tweetwallfx.stepengine.steps.PauseStep",
                 "config": {
                     "amount": 1,
                     "unit": "SECONDS"
                 }
-            },
-            {
-                "stepClassName": "org.tweetwallfx.devoxx.cfp.stepengine.steps.UpdateScheduleResults"
             },
             {
                 "stepClassName": "org.tweetwallfx.vdz.steps.FlipOutTweets"
@@ -34,9 +31,18 @@
         ],
         "dataProviderSettings": [
             {
+                "dataProviderClassName": "org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider",
+                "config": {
+                    "initialDelay": 0,
+                    "scheduleDuration": 900
+                }
+            },
+            {
                 "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider",
                 "config": {
-                    "blockedTwitterUserScreenNames": [],
+                    "blockedTwitterUserScreenNames": [
+                        "1120blackfriday"
+                     ],
                     "historySize": 25,
                     "maxTweets": 7,
                     "minFollowersCount": 50
