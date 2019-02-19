@@ -3,8 +3,8 @@
         "extendedMode": true
     },
     "tweetwall": {
-        "query": "#vdz18 OR #voxxed OR #java",
-        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2018!",
+        "query": "#vdz19 OR #voxxed OR #java",
+        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2019!",
         "stylesheetResource": "tweetwall.css"
     },
     "stepEngine": {
@@ -51,8 +51,8 @@
         ]
     },
     "devoxxCFP": {
-        "baseUri": "https://cfp-vdz.exteso.com/api",
-        "eventId": "VDZ18",
-        "votingResultsUri": "https://cfp-vdz.exteso.com/api/voting/v1/top/talks"
+        "baseUri": "https://cfpvdz19.confinabox.com/api",
+        "eventId": "cfpvdz19",
+        "votingResultsUri": "https://cfpvdz19.confinabox.com/api/voting/v1/top/talks"
     }
 }
