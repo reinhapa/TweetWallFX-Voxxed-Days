@@ -30,8 +30,8 @@ tasks.withType(JavaExec) {
     main mainClassName
     jvmArgs '-Dorg.tweetwallfx.scheduledata.day=tuesday'
     jvmArgs '-Dorg.tweetwallfx.scheduledata.time=10:00Z'
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
-    jvmArgs '-Djavafx.verbose=true'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
+//    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.verbose=true'
 }
 
@@ -43,6 +43,7 @@ task('debug', dependsOn: 'classes', type: JavaExec) {
 dependencies {
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-tweet-impl-twitter4j', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-tweet-stepengine', version: versionTweetwallFX
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-cfp-impl', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-cfp-stepengine', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-generic2d', version: versionTweetwallFX
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versionLog4j

@@ -106,6 +106,7 @@ public class ShowSchedule extends FlipInTweets {
 
     private Node createSessionNode(final SessionData sessionData) {
         try {
+            LOGGER.info("Session: '{}', room, '{}', speakers {}", sessionData.title, sessionData.room, sessionData.speakers);
             Node session = FXMLLoader.<Node>load(this.getClass().getResource("/session.fxml"));
             Text title = (Text) session.lookup("#title");
             title.setText(sessionData.title);
