@@ -32,6 +32,7 @@ tasks.withType(JavaExec) {
     main mainClassName
     jvmArgs '-Dorg.tweetwallfx.scheduledata.day=tuesday'
     jvmArgs '-Dorg.tweetwallfx.scheduledata.time=10:00Z'
+//    jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
 //    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.verbose=true'
