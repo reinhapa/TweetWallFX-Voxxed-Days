@@ -43,12 +43,14 @@
 }
 
 .root {
-    -fx-font-family: 'System'; 
+    -fx-font-family: 'Calibri'; 
     devoxx_gradient: linear-gradient(to bottom right, #83c2ed, derive(#83c2ed, -30%))
 }
 
 .statusline {
-    /*-fx-font: 12px "Calibri";*/ 
+/*
+    -fx-font: 12px 'Calibri';
+*/ 
     -fx-text-fill: red !important;
 }
 
@@ -56,16 +58,22 @@
     -fx-graphic: none;
     -fx-background-color: black;
     -fx-background-graphic: url(vdz18-background-single.png);
-    /* -fx-second-graphic: none;*/
+/*
+    -fx-second-graphic: none;
+*/
     -fx-display-tag-num: 25;
-    /*-fx-font: 12pt "BebasNeue";*/
+/*    
+    -fx-font: 12pt 'BebasNeue';
+*/
     -fx-font-size-min: 36;
     -fx-font-size-max: 72;
     -fx-tweet-font-size: 48;
     
 }
 .wordle .bg-image {
-    /*--fx-opacity: 0.8; */
+/*
+    -fx-opacity: 0.8;
+*/
 }
 
 .wordle .secondlogo {
@@ -80,12 +88,16 @@
 }
 
 .wordle .tag {
-    /*-fx-font-family: "Calibri";*/
+/*
+*/
+    -fx-font-family: 'Calibri';
     -fx-fill: white !important;
-/*    -fx-stroke: black;
-    -fx-stroke-width: 0.5;    */
-    /*-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );*/
-    /*-fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );*/
+/*
+    -fx-stroke: black;
+    -fx-stroke-width: 0.5;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+*/
 }
 
 .wordle .name {
