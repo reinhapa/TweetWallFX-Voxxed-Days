@@ -3,7 +3,7 @@
         "extendedMode": true
     },
     "tweetwall": {
-        "query": "#vdz19 OR @VoxxedZurich OR #itWillBeFun OR #java",
+        "query": "#vdz19 OR @VoxxedZurich OR #itWillBeFun",
         "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2019!",
         "stylesheetResource": "tweetwall.css"
     },
@@ -44,8 +44,8 @@
                         "1120blackfriday"
                      ],
                     "historySize": 25,
-                    "maxTweets": 7,
-                    "minFollowersCount": 50
+                    "maxTweets": 6,
+                    "minFollowersCount": 15
                 }
             }
         ]

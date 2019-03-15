@@ -88,7 +88,7 @@ public class FlipInTweets implements Step {
                                 tweetList.widthProperty())));
         tweetList.layoutYProperty()
                 .bind(Bindings.add(
-                        Bindings.multiply(200.0 / 1280.0,
+                        Bindings.multiply(200.0 / 1080.0,
                                 wordleSkin.getSkinnable().heightProperty()),
                         Bindings.multiply(Math.sin(Math.toRadians(tweetList.getRotate())) * 0.5,
                                 tweetList.heightProperty())));
@@ -131,7 +131,7 @@ public class FlipInTweets implements Step {
                                     tweetList.widthProperty())));
             view.layoutYProperty()
                     .bind(Bindings.add(
-                            Bindings.multiply(310 / 1280.0,
+                            Bindings.multiply(310 / 1080.0,
                                     wordleSkin.getSkinnable().heightProperty()),
                             Bindings.multiply(Math.sin(Math.toRadians(tweetList.getRotate())) * 0.5,
                                     tweetList.heightProperty())));

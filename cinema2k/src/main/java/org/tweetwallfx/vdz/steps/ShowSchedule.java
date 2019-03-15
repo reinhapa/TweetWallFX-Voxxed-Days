@@ -74,7 +74,7 @@ public class ShowSchedule extends FlipInTweets {
                 Node scheduleNode = FXMLLoader.<Node>load(this.getClass().getResource("/schedule.fxml"));
                 transitions.add(new FlipInXTransition(scheduleNode));
                 scheduleNode.layoutXProperty().bind(Bindings.multiply(100.0 / 1920.0, wordleSkin.getSkinnable().widthProperty()));
-                scheduleNode.layoutYProperty().bind(Bindings.multiply(200.0 / 1280.0, wordleSkin.getSkinnable().heightProperty()));
+                scheduleNode.layoutYProperty().bind(Bindings.multiply(200.0 / 1080.0, wordleSkin.getSkinnable().heightProperty()));
                 wordleSkin.getPane().getChildren().add(scheduleNode);
 
                 GridPane grid = (GridPane) scheduleNode.lookup("#sessionGrid");

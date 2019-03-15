@@ -24,7 +24,9 @@
 
 apply plugin: 'java-library'
 apply plugin: 'application'
-mainClassName = 'org.tweetwallfx.generic.Main'
+
+mainClassName = 'org.tweetwallfx.vdz.Main'
+//mainClassName = 'org.tweetwallfx.generic.Main'
 
 tasks.withType(JavaExec) {
     main mainClassName
