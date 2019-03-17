@@ -7,6 +7,48 @@
         "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2019!",
         "stylesheetResource": "tweetwall.css"
     },
+    "filterchains": {
+        "chains": {
+            "twitter": {
+                "domainObjectClassName": "org.tweetwallfx.tweet.api.Tweet",
+                "defaultResult": true,
+                "filterSteps": [
+                    {
+                        "stepClassName": "org.tweetwallfx.tweet.api.filter.AcceptFromSenderFilterStep"
+                    },
+                    {
+                        "stepClassName": "org.tweetwallfx.tweet.api.filter.RejectFromSenderFilterStep"
+                    },
+                    {
+                        "stepClassName": "org.tweetwallfx.tweet.api.filter.UserMinimumFollwerCountFilterStep"
+                    },
+                    {
+                        "stepClassName": "org.tweetwallfx.tweet.api.filter.MaxHashtagLengthFilterStep"
+                    }
+                ]
+            }
+        }
+    },
+    "org.tweetwallfx.tweet.api.filter.AcceptFromSenderFilterStep$Config": {
+        "checkRetweeted": false,
+        "userHandles": [
+            "VoxxedZurich",
+            "reinhapa"
+        ]
+    },
+    "org.tweetwallfx.tweet.api.filter.MaxHashtagLengthFilterStep$Config": {
+        "checkRetweeted": true,
+        "maxLength": 15
+    },
+    "org.tweetwallfx.tweet.api.filter.RejectFromSenderFilterStep$Config": {
+        "checkRetweeted": true,
+        "userHandles": [
+            "turkeytoday"
+        ]
+    },
+    "org.tweetwallfx.tweet.api.filter.UserMinimumFollwerCountFilterStep$Config": {
+        "count": 15
+    },
     "stepEngine": {
         "steps": [
             {

@@ -1,34 +1,44 @@
 package org.tweetwallfx.vdz;
 
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class TestMain extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    BorderPane borderPane = new BorderPane();
-    Scene scene = new Scene(borderPane, 1920, 1080);
-    borderPane.getStyleClass().add("splash");
+    Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+    System.out.println("Visual bounds");
+    System.out.println("min x \t" + visualBounds.getMinX());
+    System.out.println("min y \t" + visualBounds.getMinY());
+    System.out.println("width \t" + visualBounds.getWidth());
+    System.out.println("height \t" + visualBounds.getHeight());
 
-    ImageView background =
-        new ImageView(getClass().getResource("/vdz18-background-single.png").toString());
-    borderPane.setCenter(background);
+    System.out.println();
 
+    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+    System.out.println("Bounds");
+    System.out.println("min x \t" + bounds.getMinX());
+    System.out.println("min y \t" + bounds.getMinY());
+    System.out.println("width \t" + bounds.getWidth());
+    System.out.println("height \t" + bounds.getHeight());
+
+    Scene scene = new Scene(new Group(), 1920, 1080);
+    scene.setFill(Color.YELLOW);
+    primaryStage.setHeight(1080);
+    primaryStage.setWidth(1920);
     primaryStage.setTitle("Test");
     primaryStage.setScene(scene);
     primaryStage.show();
-    primaryStage.setFullScreen(!Boolean.getBoolean("org.tweetwallfx.disable-full-screen"));
+    primaryStage.setFullScreen(true);
   }
 
-  /**
-   * @param args the command line arguments
-   */
   public static void main(String[] args) {
     launch(args);
   }
-
 }
