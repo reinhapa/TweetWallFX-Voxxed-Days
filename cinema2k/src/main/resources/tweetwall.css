@@ -55,9 +55,11 @@
 }
 
 .wordle {
-    -fx-graphic: none;
+    -fx-graphic: url('vdz19-oldlogo-left.png');
     -fx-background-color: black;
+/*
     -fx-background-graphic: url('vdz19-oldlogo-left.png');
+*/
 /*
     -fx-second-graphic: none;
 */
@@ -83,8 +85,8 @@
 }
 
 .wordle .logo {
-    -fx-translate-x: +150;
-    -fx-translate-y: -150;
+    -fx-translate-x: 0;
+    -fx-translate-y: -135;
 }
 
 .wordle .tag {
@@ -104,7 +106,7 @@
 }
 
 .wordle .handle {
-    -fx-font-size: 28px;
+    -fx-font-size: 32px;
     -fx-text-fill: white;
 }
 
@@ -131,7 +133,7 @@
 }
 
 .tweetFlow {
-    -fx-font-size: 1em;
+    -fx-font-size: 1.2em;
     -fx-fill: #285285;
 }
 
