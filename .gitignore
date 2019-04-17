@@ -4,12 +4,14 @@
 **/.nb-gradle
 **/.gradle
 **/MyOAuth.properties
+**/.DS_Store
 
 # Eclipse specific
 **/.classpath
 **/.project
 **/.settings/
 **/bin/
+
 
 #
 /*/config.properties
