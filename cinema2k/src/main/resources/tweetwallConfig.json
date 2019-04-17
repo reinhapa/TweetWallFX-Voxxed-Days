@@ -3,8 +3,8 @@
         "extendedMode": true
     },
     "tweetwall": {
-        "query": "#vdz19 OR @VoxxedZurich OR #itWillBeFun",
-        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2019!",
+        "query": "#VDC19 OR @VoxxedCERN",
+        "title": "The JavaFX Tweetwall for Voxxed Days CERN 2019!",
         "stylesheetResource": "tweetwall.css"
     },
     "filterchains": {
@@ -93,8 +93,8 @@
         ]
     },
     "devoxxCFP": {
-        "baseUri": "https://cfpvdz19.confinabox.com/api",
-        "eventId": "cfpvdz19",
-        "votingResultsUri": "https://cfpvdz19.confinabox.com/api/voting/v1/top/talks"
+        "baseUri": "https://vxdcern19.confinabox.com/api",
+        "eventId": "vxdcern19",
+        "votingResultsUri": "https://vxdcern19.confinabox.com/api/voting/v1/top/talks"
     }
 }
