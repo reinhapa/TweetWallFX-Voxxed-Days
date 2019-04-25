@@ -158,6 +158,15 @@ cd /opt
 curl https://download.bell-sw.com/java/{jdk-version}/bellsoft-jdk{jdk-version}-linux-arm32-vfp-hflt.tar.gz | sudo tar -xvz
 ----
 
+To have the installed Java version in the path of the current user, we create a `.bash_profile` having the 
+following content:
+
+[source,bash,subs="attributes"]
+----
+export JAVA_HOME=/opt/jdk-{jdk-version}
+export PATH=$JAVA_HOME/bin:$PATH
+----
+
 As last step we just need to clone the Tweetwall Git repository:
 
 [source,bash,subs="attributes"]
@@ -179,11 +188,6 @@ Create a `tweetwallConfig.json` in the user home directory having the twitter sp
             "accessToken" : "12cF34j9-cF3cGz819x4j2iQ6Vgh4wqmLqksxHzRFt78D3WKiB", <3>
             "accessTokenSecret" : "2DghUiSB5hdg7jFbNKHqx5xRkXNZhnzZtICUPG7Bz92x4" <4>
         }
-    },
-    "tweetwall" : {
-        "query" : "#myevent OR #someothertag",
-        "title" : "The JavaFX Tweetwall for my Event",
-        "stylesheetResource" : "tweetwall.css"
     }
 }
 ----
@@ -192,12 +196,10 @@ Create a `tweetwallConfig.json` in the user home directory having the twitter sp
 <3> The Access Token
 <4> The Access Token Secret
 
-Now export `JAVA_HOME` and `PATH` environment variables and start build:
+Now we can start building:
 
 [source,bash,subs="attributes"]
 ----
-export JAVA_HOME=/opt/jdk-{jdk-version}
-export PATH=$JAVA_HOME/bin:$PATH
 cd {project-path}
 ./gradlew run
 ----
