@@ -131,8 +131,10 @@ Now you should be able to login using `ssh` or using the console on the desktop 
 ssh pi@raspberry
 ----
 
-Start `raspi-config` and configure the "Boot Options" to "B1 Console" and after a reboot we are
-ready to do the final configuration steps.
+Start `raspi-config` and configure the "Boot Options" to "B1 Console", under "7 Advanced Options" disable "A2 Overscan"
+and "A3 Memory Split" to "256".
+
+Then after a reboot we are ready to do the final configuration steps.
 
 First we install the latest JDK from {bellsoft}[Bellsoft]:
 
