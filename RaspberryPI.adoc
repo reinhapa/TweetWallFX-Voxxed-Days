@@ -1,0 +1,203 @@
+////
+
+    The MIT License
+
+    Copyright 2019 TweetWallFX
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+
+////
+
+= TweetWallFX on Raspberry Pi
+:project-path: TweetWallFX-Voxxed-Days-Zurich
+:project-full-path: reinhapa/{project-path}
+:jdk-version: 12.0.1
+:tweetwallfx-homepage: https://github.com/TweetWallFX
+:rpi-homepage: https://www.raspberrypi.org
+:bellsoft: https://www.bell-sw.com/pages/java-{jdk-version}
+
+image:https://img.shields.io/badge/license-MIT-blue.svg["MIT License", link="https://github.com/{project-full-path}/blob/{github-branch}/LICENSE"]
+
+This documentation should guide you thru all steps to get the {tweetwallfx-homepage}[TweetWallFX] running on a {rpi-homepage}[Raspberry Pi]
+
+
+== Requirements
+
+Before you start you need the following parts and software ready:
+
+- {rpi-homepage}/products[Raspberry Pi Model 3] or later
+- 32 GB Memory flash card
+
+
+== Preparing Raspian
+
+First we need to prepare the memory card by extracting the Raspbian image to the memory card:
+
+Download latest version
+[source,bash]
+----
+wget -O raspbian-stretch-full.zip https://downloads.raspberrypi.org/raspbian_full_latest
+----
+
+Unzip the downloaded image
+[source,bash]
+----
+unzip raspbian-stretch-full.zip
+----
+
+Insert the memory card and check the device:
+[source,bash]
+----
+sudo fdisk -l
+----
+
+Unmount the memory card and transfer the image to the card (if the card is in `/dev/sdb`):
+[source,bash]
+----
+sudo umount /dev/sdb1
+sudo dd bs=4M if=2019-04-08-raspbian-stretch-full.img conv=fsync of=/dev/sdb
+----
+
+Mount the boot partition
+[source,bash]
+----
+sudo mount /dev/sdb1 /mnt/tmp
+----
+
+To log boot messages to `tty3` and disable the cursor blinking edit the `/mnt/tmp/cmdline` file and
+change the following things
+
+* Replace `console=tty1` with `console=tty3` to redirect boot messages to the third console.
+* Add `loglevel=3` to disable non-critical kernel log messages.
+* Add `vt.global_cursor_default=0` to disable the blinking cursor.
+
+
+Enable SSH at startup by creating a respective state file:
+[source,bash]
+----
+sudo touch /mnt/tmp/ssh
+----
+
+If you need to connect to WiFi mount the boot partition, create a file
+`/mnt/tmp/wpa_supplicant.conf` file with  the following content
+[source,plain]
+----
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=«your_ISO-3166-1_two-letter_country_code»
+
+network={
+    ssid="«your_SSID»"
+    psk="«your_PSK»"
+    key_mgmt=WPA-PSK
+}
+----
+
+Unmount all partitions:
+[source,bash]
+----
+sudo umount /dev/sdb*
+----
+
+If you want to specify a different host name you need to mount the root partition and
+update the `etc/hostname` fiie
+
+
+== Set up the Raspberry Pi for the TweetWallFX
+
+After the writing of the image and base configuration has been completed, insert the flash card
+into the Raspberry Pi and boot it up.
+
+Now you should be able to login using `ssh` or using the console on the desktop itself
+
+[source,bash]
+----
+ssh pi@raspberry
+----
+
+First we setup edit the `/boot/config.txt` file and add the following lines to the end:
+
+[source, plain]
+----
+disable_overscan=1
+gpu_mem=256
+hdmi_group=2
+hdmi_mode=82
+----
+
+This will disable the overscan, set the GPU memory split to 256 MB and sets the display resolution
+to 1080p (1920x1080).
+
+For more options see https://www.raspberrypi.org/documentation/configuration/config-txt/video.md[Raspberry Pi video settings]
+
+
+Next we start `raspi-config` and configure the "Boot Options" to "B1 Console". After a reboot we are ready to do the
+final configuration steps.
+
+First we install the latest JDK from {bellsoft}[Bellsoft]:
+
+[source,bash,subs="attributes"]
+----
+cd /opt
+curl https://download.bell-sw.com/java/{jdk-version}/bellsoft-jdk{jdk-version}-linux-arm32-vfp-hflt.tar.gz | sudo tar -xvz
+----
+
+As last step we just need to clone the Tweetwall Git repository:
+
+[source,bash,subs="attributes"]
+----
+cd
+git clone https://github.com/{project-full-path}.git
+----
+
+Create a `tweetwallConfig.json` in the user home directory having the twitter specific API keys:
+
+[source,json]
+----
+{
+    "twitter" : {
+        "extendedMode" : true,
+        "oauth" : {
+            "consumerKey" : "v8SvGzboGrvU148cKs8PghI1v", <1>
+            "consumerSecret" : "12w6vg612hgvoGk0iysMlLvKfh0ouMcVg00RWG8rV6jccZ8RUg", <2>
+            "accessToken" : "12cF34j9-cF3cGz819x4j2iQ6Vgh4wqmLqksxHzRFt78D3WKiB", <3>
+            "accessTokenSecret" : "2DghUiSB5hdg7jFbNKHqx5xRkXNZhnzZtICUPG7Bz92x4" <4>
+        }
+    },
+    "tweetwall" : {
+        "query" : "#myevent OR #someothertag",
+        "title" : "The JavaFX Tweetwall for my Event",
+        "stylesheetResource" : "tweetwall.css"
+    }
+}
+----
+<1> The Consumer Key (API Key)
+<2> The Consumer Secret (API Secret)
+<3> The Access Token
+<4> The Access Token Secret
+
+Now export `JAVA_HOME` and `PATH` environment variables and start build:
+
+[source,bash,subs="attributes"]
+----
+export JAVA_HOME=/opt/jdk-{jdk-version}
+export PATH=$JAVA_HOME/bin:$PATH
+cd {project-path}
+./gradlew run
+----
