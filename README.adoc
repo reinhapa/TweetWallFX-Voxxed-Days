@@ -39,7 +39,7 @@ website of your company. After doing so generate a new access token under `Keys 
 
 Update the `tweetwallConfig.json` file with your OAuth values as follows:
 
-[source,plain]
+[source,json]
 ----
 {
     "twitter" : {
