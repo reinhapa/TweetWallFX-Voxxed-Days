@@ -131,10 +131,24 @@ Now you should be able to login using `ssh` or using the console on the desktop 
 ssh pi@raspberry
 ----
 
-Start `raspi-config` and configure the "Boot Options" to "B1 Console", under "7 Advanced Options" disable "A2 Overscan"
-and "A3 Memory Split" to "256".
+First we setup edit the `/boot/config.txt` file and add the following lines to the end:
 
-Then after a reboot we are ready to do the final configuration steps.
+[source, plain]
+----
+disable_overscan=1
+gpu_mem=256
+hdmi_group=2
+hdmi_mode=82
+----
+
+This will disable the overscan, set the GPU memory split to 256 MB and sets the display resolution
+to 1080p (1920x1080).
+
+For more options see https://www.raspberrypi.org/documentation/configuration/config-txt/video.md[Raspberry Pi video settings]
+
+
+Next we start `raspi-config` and configure the "Boot Options" to "B1 Console". After a reboot we are ready to do the
+final configuration steps.
 
 First we install the latest JDK from {bellsoft}[Bellsoft]:
 
