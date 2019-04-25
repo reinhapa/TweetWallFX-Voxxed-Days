@@ -25,6 +25,8 @@
 ////
 
 = TweetWallFX on Raspberry Pi
+:project-path: TweetWallFX-Voxxed-Days-Zurich
+:project-full-path: reinhapa/{project-path}
 :jdk-version: 12.0.1
 :tweetwallfx-homepage: https://github.com/TweetWallFX
 :rpi-homepage: https://www.raspberrypi.org
@@ -132,9 +134,54 @@ ssh pi@raspberry
 Start `raspi-config` and configure the "Boot Options" to "B1 Console" and after a reboot we are
 ready to do the final configuration steps.
 
-First we download the latest JDK from {bellsoft}[Bellsoft]:
+First we install the latest JDK from {bellsoft}[Bellsoft]:
 
-[source,bash]
+[source,bash,subs="attributes"]
 ----
-wget https://download.bell-sw.com/java/{jdk-version}/bellsoft-jdk{jdk-version}-linux-arm32-vfp-hflt.tar.gz
+cd /opt
+curl https://download.bell-sw.com/java/{jdk-version}/bellsoft-jdk{jdk-version}-linux-arm32-vfp-hflt.tar.gz | sudo tar -xvz
+----
+
+As last step we just need to clone the Tweetwall Git repository:
+
+[source,bash,subs="attributes"]
+----
+cd
+git clone https://github.com/{project-full-path}.git
+----
+
+Create a `tweetwallConfig.json` in the user home directory having the twitter specific API keys:
+
+[source,json]
+----
+{
+    "twitter" : {
+        "extendedMode" : true,
+        "oauth" : {
+            "consumerKey" : "v8SvGzboGrvU148cKs8PghI1v", <1>
+            "consumerSecret" : "12w6vg612hgvoGk0iysMlLvKfh0ouMcVg00RWG8rV6jccZ8RUg", <2>
+            "accessToken" : "12cF34j9-cF3cGz819x4j2iQ6Vgh4wqmLqksxHzRFt78D3WKiB", <3>
+            "accessTokenSecret" : "2DghUiSB5hdg7jFbNKHqx5xRkXNZhnzZtICUPG7Bz92x4" <4>
+        }
+    },
+    "tweetwall" : {
+        "query" : "#myevent OR #someothertag",
+        "title" : "The JavaFX Tweetwall for my Event",
+        "stylesheetResource" : "tweetwall.css"
+    }
+}
+----
+<1> The Consumer Key (API Key)
+<2> The Consumer Secret (API Secret)
+<3> The Access Token
+<4> The Access Token Secret
+
+Now export `JAVA_HOME` and `PATH` environment variables and start build:
+
+[source,bash,subs="attributes"]
+----
+export JAVA_HOME=/opt/jdk-{jdk-version}
+export PATH=$JAVA_HOME/bin:$PATH
+cd {project-path}
+./gradlew run
 ----
