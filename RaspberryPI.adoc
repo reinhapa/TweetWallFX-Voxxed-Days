@@ -158,7 +158,7 @@ cd /opt
 curl https://download.bell-sw.com/java/{jdk-version}/bellsoft-jdk{jdk-version}-linux-arm32-vfp-hflt.tar.gz | sudo tar -xvz
 ----
 
-To have the installed Java version in the path of the current user, we create a `.bash_profile` having the 
+To have the installed Java version in the path of the current user, we create a `.bash_profile` having the
 following content:
 
 [source,bash,subs="attributes"]
