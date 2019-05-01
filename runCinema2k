@@ -1,0 +1,9 @@
+#!/bin/bash
+START_SCRIPT=./cinema2k/build/install/tweetwallfx-voxxed-days-zurich-cinema2k/bin/tweetwallfx-voxxed-days-zurich-cinema2k
+
+if [ ! -f $START_SCRIPT ]; then
+	echo "Distribution script does not exist. Building it..."
+	./gradlew installDist
+fi
+
+$START_SCRIPT
