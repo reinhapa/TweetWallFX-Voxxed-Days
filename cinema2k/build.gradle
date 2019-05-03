@@ -36,6 +36,9 @@ tasks.withType(JavaExec) {
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
 //    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.verbose=true'
+    jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
+    jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
+    jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
 }
 
 task('debug', dependsOn: 'classes', type: JavaExec) {
