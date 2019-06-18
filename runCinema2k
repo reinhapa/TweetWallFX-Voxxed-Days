@@ -6,4 +6,5 @@ if [ ! -f $START_SCRIPT ]; then
 	./gradlew installDist
 fi
 
+export JAVA_OPTS="--add-modules java.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml"
 $START_SCRIPT
