@@ -37,8 +37,8 @@ tasks.withType(JavaExec) {
 //    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.verbose=true'
     jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
-    jvmArgs '-Dlog.fileName=/home/pi/tweetwall.log'
-    jvmArgs '-Dlog4j.configurationFile=file:///home/pi/log4j2.xml'
+    jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
+    jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
 }
 
 task('debug', dependsOn: 'classes', type: JavaExec) {

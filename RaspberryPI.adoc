@@ -136,7 +136,7 @@ First we setup edit the `/boot/config.txt` file and add the following lines to t
 [source, plain]
 ----
 disable_overscan=1
-gpu_mem=256
+gpu_mem=384
 hdmi_group=2
 hdmi_mode=82
 ----
