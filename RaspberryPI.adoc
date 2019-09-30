@@ -27,7 +27,8 @@
 = TweetWallFX on Raspberry Pi
 :project-path: TweetWallFX-Voxxed-Days-Zurich
 :project-full-path: reinhapa/{project-path}
-:jdk-version: 12.0.1
+:jdk-version: 13
+:raspian-latest-image-name: 2019-09-26-raspbian-buster-full.img
 :tweetwallfx-homepage: https://github.com/TweetWallFX
 :rpi-homepage: https://www.raspberrypi.org
 :bellsoft: https://www.bell-sw.com/pages/java-{jdk-version}
@@ -52,13 +53,13 @@ First we need to prepare the memory card by extracting the Raspbian image to the
 Download latest version
 [source,bash]
 ----
-wget -O raspbian-stretch-full.zip https://downloads.raspberrypi.org/raspbian_full_latest
+wget -O raspbian-full-latest.zip https://downloads.raspberrypi.org/raspbian_full_latest
 ----
 
 Unzip the downloaded image
 [source,bash]
 ----
-unzip raspbian-stretch-full.zip
+unzip raspbian-full-latest.zip
 ----
 
 Insert the memory card and check the device:
@@ -68,10 +69,10 @@ sudo fdisk -l
 ----
 
 Unmount the memory card and transfer the image to the card (if the card is in `/dev/sdb`):
-[source,bash]
+[source,bash,subs="attributes"]
 ----
 sudo umount /dev/sdb1
-sudo dd bs=4M if=2019-04-08-raspbian-stretch-full.img conv=fsync of=/dev/sdb
+sudo dd bs=4M if={raspian-latest-image-name} conv=fsync of=/dev/sdb
 ----
 
 Mount the boot partition
@@ -80,7 +81,7 @@ Mount the boot partition
 sudo mount /dev/sdb1 /mnt/tmp
 ----
 
-To log boot messages to `tty3` and disable the cursor blinking edit the `/mnt/tmp/cmdline` file and
+To log boot messages to `tty3` and disable the cursor blinking edit the `/mnt/tmp/cmdline.txt` file and
 change the following things
 
 * Replace `console=tty1` with `console=tty3` to redirect boot messages to the third console.
@@ -147,7 +148,7 @@ to 1080p (1920x1080).
 For more options see https://www.raspberrypi.org/documentation/configuration/config-txt/video.md[Raspberry Pi video settings]
 
 
-Next we start `raspi-config` and configure the "Boot Options" to "B1 Console". After a reboot we are ready to do the
+Next we start `sudo raspi-config` and configure the "Boot Options" to "B1 Console". After a reboot we are ready to do the
 final configuration steps.
 
 First we install the latest JDK from {bellsoft}[Bellsoft]:
