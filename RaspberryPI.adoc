@@ -142,7 +142,7 @@ hdmi_group=2
 hdmi_mode=82
 ----
 
-This will disable the overscan, set the GPU memory split to 256 MB and sets the display resolution
+This will disable the overscan, set the GPU memory split to 384 MB and sets the display resolution
 to 1080p (1920x1080).
 
 For more options see https://www.raspberrypi.org/documentation/configuration/config-txt/video.md[Raspberry Pi video settings]
