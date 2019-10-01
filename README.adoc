@@ -24,8 +24,8 @@
 
 ////
 
-= JavaFX based TweetWalls for Voxxed Days Zurich
-:project-full-path: reinhapa/TweetWallFX-Voxxed-Days-Zurich
+= JavaFX based TweetWalls for Voxxed Days
+:project-full-path: reinhapa/TweetWallFX-Voxxed-Days
 :github-branch: master
 
 image:https://img.shields.io/badge/license-MIT-blue.svg["MIT License", link="https://github.com/{project-full-path}/blob/{github-branch}/LICENSE"]
