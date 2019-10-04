@@ -44,9 +44,11 @@
 
 .root {
 /*
-	-fx-font-family: 'Calibri';
-*/ 
+    -fx-font-family: 'Calibri';
     -fx-font-family: 'DejaVu Sans'; 
+*/ 
+    font-family: 'BebasNeue';
+    src: url('BebasNeue.otf');
     devoxx_gradient: linear-gradient(to bottom right, #83c2ed, derive(#83c2ed, -30%))
 }
 
@@ -69,7 +71,7 @@
 */
     -fx-font-size-min: 36;
     -fx-font-size-max: 72;
-    -fx-tweet-font-size: 48;
+    -fx-tweet-font-size: 36;
     
 }
 .wordle .bg-image {
@@ -133,7 +135,7 @@
 }
 
 .tweetFlow {
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1.0em;
     -fx-fill: #285285;
 }
 
