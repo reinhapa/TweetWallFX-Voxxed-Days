@@ -26,7 +26,8 @@ apply plugin: 'java-library'
 apply plugin: 'application'
 
 //mainClassName = 'org.tweetwallfx.vdz.TestMain'
-mainClassName = 'org.tweetwallfx.generic.Main'
+//mainClassName = 'org.tweetwallfx.generic.Main'
+mainClassName = 'org.tweetwallfx.vdz.Main'
 
 tasks.withType(JavaExec) {
     main mainClassName
@@ -36,6 +37,12 @@ tasks.withType(JavaExec) {
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
 //    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.verbose=true'
+    jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
+    jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
+    jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
+    jvmArgs '-Dmqtt.url=ssl://reinharts.dyndns.org:8883'
+    jvmArgs '-Dmqtt.username=reinhapa'
+    jvmArgs '-Dmqtt.password=qwas1029Reini'
 }
 
 task('debug', dependsOn: 'classes', type: JavaExec) {
@@ -50,4 +57,5 @@ dependencies {
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-cfp-stepengine', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-generic2d', version: versionTweetwallFX
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versionLog4j
+    implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.1'
 }
