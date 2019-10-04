@@ -41,8 +41,8 @@ tasks.withType(JavaExec) {
     jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
     jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
     jvmArgs '-Dmqtt.url=ssl://reinharts.dyndns.org:8883'
-    jvmArgs '-Dmqtt.username=reinhapa'
-    jvmArgs '-Dmqtt.password=qwas1029Reini'
+    jvmArgs '-Dmqtt.username=tweetwall'
+    jvmArgs '-Dmqtt.password=Tw€€twall'
 }
 
 task('debug', dependsOn: 'classes', type: JavaExec) {
