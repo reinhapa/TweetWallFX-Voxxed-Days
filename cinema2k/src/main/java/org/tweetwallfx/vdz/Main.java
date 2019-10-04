@@ -147,7 +147,7 @@ public class Main extends Application {
                         LOG.warn("Going to exit with rc {}", rc);
                         sampleClient.disconnect();
                         stop();
-                        System.exit(rc.intValue());
+//                        System.exit(rc.intValue());
                     }
 
                     TimeUnit.SECONDS.sleep(5);
