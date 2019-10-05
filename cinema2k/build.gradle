@@ -43,6 +43,7 @@ tasks.withType(JavaExec) {
     jvmArgs '-Dmqtt.url=ssl://reinharts.dyndns.org:8883'
     jvmArgs '-Dmqtt.username=tweetwall'
     jvmArgs '-Dmqtt.password=Tw€€twall'
+//    jvmArgs '-Dmqtt.client.id=tweetwall-1'
 }
 
 task('debug', dependsOn: 'classes', type: JavaExec) {
