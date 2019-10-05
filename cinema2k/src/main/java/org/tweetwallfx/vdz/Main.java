@@ -55,10 +55,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
-    private static final String STARTUP = "org.tweetwallfx.startup";
     private static final Logger LOG = LogManager.getLogger(Main.class);
-    private static final Logger LOGGER = LogManager.getLogger(STARTUP);
 
     private final AtomicReference<Integer> exitCode = new AtomicReference<>();
 
@@ -78,11 +75,10 @@ public class Main extends Application {
                 .ifPresent(scene.getStylesheets()::add);
         Optional.ofNullable(tweetwallSettings.getStylesheetFile()).ifPresent(scene.getStylesheets()::add);
 
-        LoggerContext context = LoggerContext.getContext(false);
-        org.apache.logging.log4j.core.config.Configuration config = context.getConfiguration();
+        org.apache.logging.log4j.core.config.Configuration config = LoggerContext.getContext().getConfiguration();
         StringPropertyAppender spa = new StringPropertyAppender();
         spa.start();
-        LoggerConfig slc = config.getLoggerConfig(LOGGER.getName());
+        LoggerConfig slc = config.getLoggerConfig(LOG.getName());
         slc.setLevel(Level.TRACE);
         slc.addAppender(spa, Level.TRACE, null);
 
@@ -107,8 +103,7 @@ public class Main extends Application {
                     break;
                 }
                 case "x": {
-                    primaryStage.close();
-                    Platform.exit();
+                    exitCode.set(Integer.valueOf(0));
                     return;
                 }
                 default:
@@ -159,7 +154,6 @@ public class Main extends Application {
                         LOG.warn("Going to exit with rc {}", rc);
                         sampleClient.disconnect();
                         Platform.exit();
-                        // System.exit(rc.intValue());
                         return;
                     }
 

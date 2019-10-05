@@ -82,12 +82,8 @@
             {
                 "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider",
                 "config": {
-                    "blockedTwitterUserScreenNames": [
-                        "1120blackfriday"
-                     ],
                     "historySize": 25,
-                    "maxTweets": 6,
-                    "minFollowersCount": 10
+                    "maxTweets": 6
                 }
             }
         ]
