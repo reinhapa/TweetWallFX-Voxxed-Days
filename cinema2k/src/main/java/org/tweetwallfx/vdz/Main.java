@@ -55,12 +55,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
-    private static final String STARTUP = "org.tweetwallfx.startup";
     private static final Logger LOG = LogManager.getLogger(Main.class);
-    private static final Logger LOGGER = LogManager.getLogger(STARTUP);
 
-    private final UUID uuid = UUID.randomUUID();
     private final AtomicReference<Integer> exitCode = new AtomicReference<>();
 
     @Override
@@ -79,11 +75,10 @@ public class Main extends Application {
                 .ifPresent(scene.getStylesheets()::add);
         Optional.ofNullable(tweetwallSettings.getStylesheetFile()).ifPresent(scene.getStylesheets()::add);
 
-        LoggerContext context = LoggerContext.getContext(false);
-        org.apache.logging.log4j.core.config.Configuration config = context.getConfiguration();
+        org.apache.logging.log4j.core.config.Configuration config = LoggerContext.getContext().getConfiguration();
         StringPropertyAppender spa = new StringPropertyAppender();
         spa.start();
-        LoggerConfig slc = config.getLoggerConfig(LOGGER.getName());
+        LoggerConfig slc = config.getLoggerConfig(LOG.getName());
         slc.setLevel(Level.TRACE);
         slc.addAppender(spa, Level.TRACE, null);
 
@@ -97,11 +92,21 @@ public class Main extends Application {
         Platform.runLater(tweetsTask::start);
 
         scene.setOnKeyTyped((KeyEvent event) -> {
-            if (event.isMetaDown() && event.getCharacter().equals("d")) {
-                if (null == statusLineHost.getParent()) {
-                    borderPane.setBottom(statusLineHost);
-                } else {
-                    borderPane.getChildren().remove(statusLineHost);
+            if (event.isMetaDown()) {
+                switch (event.getCharacter()) {
+                case "d": {
+                    if (null == statusLineHost.getParent()) {
+                        borderPane.setBottom(statusLineHost);
+                    } else {
+                        borderPane.getChildren().remove(statusLineHost);
+                    }
+                    break;
+                }
+                case "x": {
+                    exitCode.set(Integer.valueOf(0));
+                    return;
+                }
+                default:
                 }
             }
         });
@@ -111,6 +116,7 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.setFullScreen(!Boolean.getBoolean("org.tweetwallfx.disable-full-screen"));
+
     }
 
     @Override
@@ -123,8 +129,9 @@ public class Main extends Application {
         Properties systemProperties = System.getProperties();
         for (;;) {
             String broker = systemProperties.getProperty("mqtt.url", "tcp://127.0.0.1:1883");
+            String clientId = systemProperties.getProperty("mqtt.client.id", UUID.randomUUID().toString());
             try (MqttClientPersistence persistence = new MemoryPersistence();
-                    MqttClient sampleClient = new MqttClient(broker, uuid.toString(), persistence)) {
+                    MqttClient sampleClient = new MqttClient(broker, clientId, persistence)) {
                 MqttConnectOptions connOpts = new MqttConnectOptions();
                 connOpts.setCleanSession(true);
                 connOpts.setConnectionTimeout(0);
@@ -138,16 +145,16 @@ public class Main extends Application {
                 sampleClient.connect(connOpts);
                 LOG.info("Connection established");
 
-                sampleClient.subscribe("tweetwall/action/#", this::handleMqttMessage);
+                sampleClient.subscribe("tweetwall/action/#", (t, m) -> handleMqttMessage(clientId, t, m));
                 for (;;) {
-                    sampleClient.publish("tweetwall/state/" + uuid, message("alive"));
-                    Integer rc = exitCode.get();
+                    sampleClient.publish("tweetwall/state/" + clientId, message("alive"));
+                    Integer rc = exitCode.getAndSet(null);
                     if (rc != null) {
-                        sampleClient.publish("tweetwall/" + uuid, message("stopping"));
+                        sampleClient.publish("tweetwall/state/" + clientId, message("stopping"));
                         LOG.warn("Going to exit with rc {}", rc);
                         sampleClient.disconnect();
-                        stop();
-//                        System.exit(rc.intValue());
+                        Platform.exit();
+                        return;
                     }
 
                     TimeUnit.SECONDS.sleep(5);
@@ -156,6 +163,7 @@ public class Main extends Application {
                 LOG.error("Failure while handling MQTT", e);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while waiting", e);
+                return;
             }
         }
     }
@@ -166,10 +174,9 @@ public class Main extends Application {
         return message;
     }
 
-    void handleMqttMessage(String topic, MqttMessage message) {
+    void handleMqttMessage(String clientId, String topic, MqttMessage message) {
         String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
-        LOG.warn("Unkown payload '{}' for topic {}", payload, topic);
-        if (topic.equals("tweetwall/action/" + uuid)) {
+        if (topic.equals("tweetwall/action/" + clientId)) {
             switch (payload) {
             case "stop": {
                 exitCode.set(Integer.valueOf(0));
@@ -181,6 +188,8 @@ public class Main extends Application {
             }
             default:
             }
+        } else {
+            LOG.warn("Unkown payload '{}' for topic {}", payload, topic);
         }
     }
 
