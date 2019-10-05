@@ -96,11 +96,22 @@ public class Main extends Application {
         Platform.runLater(tweetsTask::start);
 
         scene.setOnKeyTyped((KeyEvent event) -> {
-            if (event.isMetaDown() && event.getCharacter().equals("d")) {
-                if (null == statusLineHost.getParent()) {
-                    borderPane.setBottom(statusLineHost);
-                } else {
-                    borderPane.getChildren().remove(statusLineHost);
+            if (event.isMetaDown()) {
+                switch (event.getCharacter()) {
+                case "d": {
+                    if (null == statusLineHost.getParent()) {
+                        borderPane.setBottom(statusLineHost);
+                    } else {
+                        borderPane.getChildren().remove(statusLineHost);
+                    }
+                    break;
+                }
+                case "x": {
+                    primaryStage.close();
+                    Platform.exit();
+                    return;
+                }
+                default:
                 }
             }
         });
@@ -110,6 +121,7 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.setFullScreen(!Boolean.getBoolean("org.tweetwallfx.disable-full-screen"));
+
     }
 
     @Override
@@ -157,6 +169,7 @@ public class Main extends Application {
                 LOG.error("Failure while handling MQTT", e);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while waiting", e);
+                return;
             }
         }
     }
