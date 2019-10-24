@@ -1,0 +1,12 @@
+#!/bin/bash
+
+while true; do
+	$JAVA_HOME/bin/java Test.java
+
+	STATUS=$?
+	if [ "$STATUS" -eq 10 ]; then
+		echo "Restarting...."
+	else
+		exit $STATUS
+	fi
+done
