@@ -3,8 +3,8 @@
         "extendedMode": true
     },
     "tweetwall": {
-        "query": "#vdz19 OR @VoxxedZurich OR #itWillBeFun",
-        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2019!",
+        "query": "#vdz20 OR @VoxxedZurich OR #itWillBeFun",
+        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2020!",
         "stylesheetResource": "tweetwall.css"
     },
     "filterchains": {
@@ -49,6 +49,15 @@
     "org.tweetwallfx.tweet.api.filter.UserMinimumFollwerCountFilterStep$Config": {
         "count": 15
     },
+    "org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider": {
+        "initialDelay": 0,
+        "scheduleDuration": 900
+    },
+    "org.tweetwallfx.devoxx19be.provider.TweetStreamDataProvider": {
+        "hideRetweets": true,
+        "historySize": 25,
+        "maxTweets": 10
+    },
     "stepEngine": {
         "steps": [
             {
@@ -73,28 +82,16 @@
         ],
         "dataProviderSettings": [
             {
-                "dataProviderClassName": "org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider",
-                "config": {
-                    "initialDelay": 0,
-                    "scheduleDuration": 900
-                }
+                "dataProviderClassName": "org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider"
             },
             {
-                "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider",
-                "config": {
-                    "blockedTwitterUserScreenNames": [
-                        "1120blackfriday"
-                     ],
-                    "historySize": 25,
-                    "maxTweets": 6,
-                    "minFollowersCount": 15
-                }
+                "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider"
             }
         ]
     },
     "devoxxCFP": {
-        "baseUri": "https://cfpvdz19.confinabox.com/api",
-        "eventId": "cfpvdz19",
-        "votingResultsUri": "https://cfpvdz19.confinabox.com/api/voting/v1/top/talks"
+        "baseUri": "https://vdz20.cfp.dev/api/public",
+        "eventId": "cfpvdz20",
+        "votingResultsUri": "null"
     }
 }
