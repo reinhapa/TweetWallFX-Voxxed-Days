@@ -1,7 +1,7 @@
 /*
- * The MIT License
+ * The MIT License (MIT)
  *
- * Copyright 2019 TweetWallFX
+ * Copyright (c) 2019 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,13 @@
  * THE SOFTWARE.
  */
 
-rootProject.name='tweetwallfx-voxxed-days'
+dependencies {
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: versionLog4j
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-configuration', version: versionTweetwallFX
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-api-cfp', version: versionTweetwallFX
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-utility', version: versionTweetwallFX
 
-include ':cfp-impl'
-include ':cinema2k'
+    runtime group: 'org.apache.logging.log4j', name: 'log4j-core', version: versionLog4j
 
-if (file('../TweetWallFX').exists()) {
-//  includeBuild '../TweetWallFX'
+    testImplementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-cfp-test', version: versionTweetwallFX
 }

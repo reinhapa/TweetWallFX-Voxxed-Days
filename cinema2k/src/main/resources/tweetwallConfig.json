@@ -88,10 +88,5 @@
                 "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider"
             }
         ]
-    },
-    "devoxxCFP": {
-        "baseUri": "https://vdz20.cfp.dev/api/public",
-        "eventId": "cfpvdz20",
-        "votingResultsUri": "null"
     }
 }
