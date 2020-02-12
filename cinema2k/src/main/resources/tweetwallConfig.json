@@ -87,10 +87,5 @@
                 }
             }
         ]
-    },
-    "devoxxCFP": {
-        "baseUri": "https://cfpvdz19.confinabox.com/api",
-        "eventId": "cfpvdz19",
-        "votingResultsUri": "https://cfpvdz19.confinabox.com/api/voting/v1/top/talks"
     }
 }

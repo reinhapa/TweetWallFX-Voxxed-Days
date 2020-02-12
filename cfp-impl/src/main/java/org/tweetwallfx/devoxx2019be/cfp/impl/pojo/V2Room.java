@@ -1,7 +1,7 @@
 /*
- * The MIT License
+ * The MIT License (MIT)
  *
- * Copyright 2019 TweetWallFX
+ * Copyright (c) 2019 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.tweetwallfx.devoxx2019be.cfp.impl.pojo;
 
-rootProject.name='tweetwallfx-voxxed-days'
+import static org.tweetwallfx.util.ToString.createToString;
+import static org.tweetwallfx.util.ToString.mapOf;
+import static org.tweetwallfx.util.ToString.mapEntry;
 
-include ':cfp-impl'
-include ':cinema2k'
+public class V2Room {
 
-if (file('../TweetWallFX').exists()) {
-//  includeBuild '../TweetWallFX'
+    private int id;
+    private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return createToString(this, mapOf(
+                mapEntry("id", getId()),
+                mapEntry("name", getName())
+        ), super.toString());
+    }
 }
