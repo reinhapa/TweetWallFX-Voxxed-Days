@@ -132,6 +132,10 @@
     -fx-font-size: 12pt;
 }
 
+.statusline {
+    -fx-font-size: 12pt;
+}
+
 .tweetFlow {
     -fx-font-size: 1.2em;
     -fx-fill: #285285;

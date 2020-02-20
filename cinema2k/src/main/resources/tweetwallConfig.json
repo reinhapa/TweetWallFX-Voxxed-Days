@@ -85,7 +85,11 @@
                 "dataProviderClassName": "org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider"
             },
             {
-                "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider"
+                "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider",
+                "config": {
+                    "historySize": 25,
+                    "maxTweets": 5
+                }
             }
         ]
     }
