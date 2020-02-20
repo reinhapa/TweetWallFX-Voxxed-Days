@@ -171,11 +171,15 @@ public class FlipInTweets implements Step {
         profileImageView.setCacheHint(CacheHint.QUALITY);
         TextFlow flow = new TextFlow(text);
         flow.getStyleClass().add("tweetFlow");
-        flow.maxWidthProperty().set(maxWidth);
-        flow.maxHeightProperty().set(70);
-        flow.minHeightProperty().set(70);
         flow.setCache(true);
         flow.setCacheHint(CacheHint.SPEED);
+        flow.setMinWidth(maxWidth);
+        flow.setMaxWidth(maxWidth);
+        flow.setPrefWidth(maxWidth);
+        flow.setMaxHeight(70);
+        flow.setPrefHeight(70);
+//        flow.setMinHeight(70);
+//        flow.setMinHeight(70);
         Text name = new Text(displayTweet.getUser().getName());
         name.getStyleClass().add("tweetUsername");
         name.setCache(true);

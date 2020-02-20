@@ -78,9 +78,7 @@ public class Main extends Application {
         org.apache.logging.log4j.core.config.Configuration config = LoggerContext.getContext().getConfiguration();
         StringPropertyAppender spa = new StringPropertyAppender();
         spa.start();
-        LoggerConfig slc = config.getLoggerConfig(LOG.getName());
-        slc.setLevel(Level.TRACE);
-        slc.addAppender(spa, Level.TRACE, null);
+        LoggerConfig rootLogger = config.getRootLogger();
 
         HBox statusLineHost = new HBox();
         Text statusLineText = new Text();
@@ -97,8 +95,10 @@ public class Main extends Application {
                 case "d": {
                     if (null == statusLineHost.getParent()) {
                         borderPane.setBottom(statusLineHost);
+                        rootLogger.addAppender(spa, Level.TRACE, null);
                     } else {
                         borderPane.getChildren().remove(statusLineHost);
+                        rootLogger.removeAppender(spa.getName());
                     }
                     break;
                 }

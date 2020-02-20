@@ -83,7 +83,7 @@
                 "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider",
                 "config": {
                     "historySize": 25,
-                    "maxTweets": 6
+                    "maxTweets": 5
                 }
             }
         ]
