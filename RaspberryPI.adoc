@@ -2,7 +2,7 @@
 
     The MIT License
 
-    Copyright 2019 TweetWallFX
+    Copyright 2020 TweetWallFX
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 :project-path: TweetWallFX-Voxxed-Days-Zurich
 :project-full-path: reinhapa/{project-path}
 :jdk-version: 13
-:raspian-latest-image-name: 2019-09-26-raspbian-buster-full.img
+:raspian-latest-image-name: 2020-02-13-raspbian-buster-full.img
 :tweetwallfx-homepage: https://github.com/TweetWallFX
 :rpi-homepage: https://www.raspberrypi.org
 :bellsoft: https://www.bell-sw.com/pages/java-{jdk-version}
@@ -53,13 +53,13 @@ First we need to prepare the memory card by extracting the Raspbian image to the
 Download latest version
 [source,bash]
 ----
-wget -O raspbian-full-latest.zip https://downloads.raspberrypi.org/raspbian_full_latest
+wget -O raspbian-latest-full.zip https://downloads.raspberrypi.org/raspbian_latest_full
 ----
 
 Unzip the downloaded image
 [source,bash]
 ----
-unzip raspbian-full-latest.zip
+unzip raspbian-latest-full.zip
 ----
 
 Insert the memory card and check the device:
@@ -84,7 +84,6 @@ sudo mount /dev/sdb1 /mnt/tmp
 To log boot messages to `tty3` and disable the cursor blinking edit the `/mnt/tmp/cmdline.txt` file and
 change the following things
 
-* Replace `console=tty1` with `console=tty3` to redirect boot messages to the third console.
 * Add `loglevel=3` to disable non-critical kernel log messages.
 * Add `vt.global_cursor_default=0` to disable the blinking cursor.
 
