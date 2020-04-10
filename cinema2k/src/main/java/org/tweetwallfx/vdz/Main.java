@@ -116,7 +116,6 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.setFullScreen(!Boolean.getBoolean("org.tweetwallfx.disable-full-screen"));
-
     }
 
     @Override

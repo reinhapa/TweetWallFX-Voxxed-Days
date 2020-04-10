@@ -23,6 +23,8 @@
  */
 package org.tweetwallfx.devoxx2019be.cfp.impl;
 
+import static org.tweetwallfx.devoxx.api.cfp.client.impl.RestCallHelper.readOptionalFrom;
+
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -37,28 +39,28 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.ws.rs.core.GenericType;
+
+import org.tweetwallfx.config.Configuration;
+import org.tweetwallfx.devoxx.api.cfp.client.Break;
 import org.tweetwallfx.devoxx.api.cfp.client.CFPClient;
 import org.tweetwallfx.devoxx.api.cfp.client.Event;
 import org.tweetwallfx.devoxx.api.cfp.client.Events;
+import org.tweetwallfx.devoxx.api.cfp.client.Link;
+import org.tweetwallfx.devoxx.api.cfp.client.ProposalType;
 import org.tweetwallfx.devoxx.api.cfp.client.ProposalTypes;
+import org.tweetwallfx.devoxx.api.cfp.client.Room;
 import org.tweetwallfx.devoxx.api.cfp.client.Rooms;
 import org.tweetwallfx.devoxx.api.cfp.client.Schedule;
+import org.tweetwallfx.devoxx.api.cfp.client.ScheduleSlot;
 import org.tweetwallfx.devoxx.api.cfp.client.Schedules;
 import org.tweetwallfx.devoxx.api.cfp.client.Speaker;
+import org.tweetwallfx.devoxx.api.cfp.client.SpeakerReference;
+import org.tweetwallfx.devoxx.api.cfp.client.Tag;
 import org.tweetwallfx.devoxx.api.cfp.client.Talk;
 import org.tweetwallfx.devoxx.api.cfp.client.Tracks;
 import org.tweetwallfx.devoxx.api.cfp.client.VotingResults;
-import static org.tweetwallfx.devoxx.api.cfp.client.impl.RestCallHelper.readOptionalFrom;
-import org.tweetwallfx.config.Configuration;
-import org.tweetwallfx.devoxx.api.cfp.client.Break;
-import org.tweetwallfx.devoxx.api.cfp.client.Link;
-import org.tweetwallfx.devoxx.api.cfp.client.ProposalType;
-import org.tweetwallfx.devoxx.api.cfp.client.Room;
-import org.tweetwallfx.devoxx.api.cfp.client.ScheduleSlot;
-import org.tweetwallfx.devoxx.api.cfp.client.SpeakerReference;
-import org.tweetwallfx.devoxx.api.cfp.client.Tag;
-import org.tweetwallfx.devoxx.api.cfp.client.Track;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Event;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Link;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Proposal;
@@ -73,15 +75,15 @@ import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Track;
 
 public class Devoxx2019BECFPClient implements CFPClient {
 
-    private static final GenericType<List<V2Room>> GT_ROOM = new GenericType<List<V2Room>>() {
+    private static final GenericType<List<V2Room>> GT_ROOM = new GenericType<>() {
     };
-    private static final GenericType<List<V2SessionType>> GT_SESSION_TYPE = new GenericType<List<V2SessionType>>() {
+    private static final GenericType<List<V2SessionType>> GT_SESSION_TYPE = new GenericType<>() {
     };
-    private static final GenericType<List<V2Speaker>> GT_SPEAKER = new GenericType<List<V2Speaker>>() {
+    private static final GenericType<List<V2Speaker>> GT_SPEAKER = new GenericType<>() {
     };
-    private static final GenericType<List<V2TimeSlot>> GT_TIME_SLOT = new GenericType<List<V2TimeSlot>>() {
+    private static final GenericType<List<V2TimeSlot>> GT_TIME_SLOT = new GenericType<>() {
     };
-    private static final GenericType<List<V2Track>> GT_TRACK = new GenericType<List<V2Track>>() {
+    private static final GenericType<List<V2Track>> GT_TRACK = new GenericType<>() {
     };
     private static final DateTimeFormatter HOUR_MINUTE = new DateTimeFormatterBuilder()
             .appendValue(ChronoField.HOUR_OF_DAY, 2)
@@ -458,17 +460,6 @@ public class Devoxx2019BECFPClient implements CFPClient {
         }
 //        result.setTrackId(Integer.toString(input.getTrackId()));
 //        result.setVideoURL(input.getAfterVideoURL());
-
-        return result;
-    }
-
-    private Track convertToTrack(final V2Track input) {
-        final Track result = new Track();
-
-        result.setDescription(input.getDescription());
-        result.setId(Integer.toString(input.getId()));
-        result.setImgsrc(input.getImageURL());
-        result.setTitle(input.getName());
 
         return result;
     }

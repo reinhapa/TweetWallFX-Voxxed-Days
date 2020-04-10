@@ -95,8 +95,7 @@ public class FlipInTweets implements Step {
 
         List<Tweet> tweets = dataProvider.getTweets();
         for (int i = 0; i < Math.min(tweets.size(), tweets.size()); i++) {
-            HBox tweet = createSingleTweetDisplay(tweets.get(i), userImageProvider, wordleSkin,
-                    maxWidth[i]);
+            HBox tweet = createSingleTweetDisplay(tweets.get(i), userImageProvider, maxWidth[i]);
             tweet.setMaxWidth(maxWidth[i] + 64 + 10);
             tweet.getStyleClass().add("tweetDisplay");
             transitions.add(new FlipInXTransition(tweet));
@@ -116,7 +115,7 @@ public class FlipInTweets implements Step {
         flipIns.play();
     }
 
-    private void addTweetImage(WordleSkin wordleSkin, final TweetStreamDataProvider dataProvider,
+    void addTweetImage(WordleSkin wordleSkin, final TweetStreamDataProvider dataProvider,
             VBox tweetList, List<Transition> transitions) {
         dataProvider.getLatestImage().ifPresent(image -> {
             ImageView view = new ImageView(image);
@@ -157,7 +156,7 @@ public class FlipInTweets implements Step {
     }
 
     private HBox createSingleTweetDisplay(final Tweet displayTweet,
-            final TweetUserProfileImageDataProvider userImageProvider, final WordleSkin wordleSkin,
+            final TweetUserProfileImageDataProvider userImageProvider,
             final double maxWidth) {
         // shorten tweet text here if needed
         String textWithoutMediaUrls = displayTweet.getDisplayEnhancedText();
