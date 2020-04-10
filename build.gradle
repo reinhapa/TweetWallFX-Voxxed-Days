@@ -119,9 +119,10 @@ allprojects {
             javafx group: 'org.openjfx', name: 'javafx-graphics', version: versionJavaFx, classifier: javaFxPlatform
             javafx group: 'org.openjfx', name: 'javafx-fxml', version: versionJavaFx, classifier: javaFxPlatform
             javafx group: 'org.openjfx', name: 'javafx-controls', version: versionJavaFx, classifier: javaFxPlatform
-            jaxb group: 'com.sun.activation', name: 'javax.activation', version: versionJavaActivation
-            jaxb group: 'javax.xml.bind', name: 'jaxb-api', version: versionJaxB
-            jaxb group: 'com.sun.xml.bind', name: 'jaxb-impl', version: versionJaxB
+            jaxb group: 'jakarta.activation', name: 'jakarta.activation-api', version: versionJavaActivation
+            jaxb group: 'com.sun.activation', name: 'jakarta.activation', version: versionJavaActivation
+            jaxb group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: versionJaxB
+            jaxb group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: versionJaxBruntime
             testCompile group: 'junit', name: 'junit', version: versionJUnit
             testCompile group: 'org.assertj', name: 'assertj-core', version: versionAssertJ
         }
@@ -135,7 +136,7 @@ allprojects {
                 if (preJDK11) return
                 def additionalModules = (configurations.javafx + configurations.jaxb)
                 options.addStringOption('-module-path', additionalModules.asPath)
-                options.addStringOption('-add-modules', 'java.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml')
+                options.addStringOption('-add-modules', 'jakarta.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml')
             }
         }
 
@@ -172,11 +173,11 @@ allprojects {
 //        }
 
         // configuring Spotbugs
-        apply plugin: 'com.github.spotbugs'
+//        apply plugin: 'com.github.spotbugs'
 
-        spotbugs {
-            ignoreFailures = false
-        }
+//        spotbugs {
+//            ignoreFailures = false
+//        }
 
         tasks.withType(com.github.spotbugs.SpotBugsTask) {
             // Workaround to bug https://github.com/spotbugs/spotbugs/issues/440
@@ -190,16 +191,14 @@ allprojects {
         }
 
         // configuring Versions plugin
-        dependencyUpdates {
-            revision = 'release'
-            resolutionStrategy {
-                componentSelection { rules ->
-                    rules.all { /*ComponentSelection*/ selection ->
-                        if (['alpha', 'beta', 'rc', 'cr', 'm'].any{ qualifier ->
-                            selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*.*/
-                        }) {
-                            selection.reject('Release candidate')
-                        }
+        dependencyUpdates.resolutionStrategy {
+            componentSelection { rules ->
+                rules.all { ComponentSelection selection ->
+                    boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'b', 'pr', 'ea'].any { qualifier ->
+                        selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-+]*/
+                    }
+                    if (rejected) {
+                        selection.reject('Release candidate')
                     }
                 }
             }
