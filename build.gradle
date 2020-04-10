@@ -120,6 +120,7 @@ allprojects {
             javafx group: 'org.openjfx', name: 'javafx-fxml', version: versionJavaFx, classifier: javaFxPlatform
             javafx group: 'org.openjfx', name: 'javafx-controls', version: versionJavaFx, classifier: javaFxPlatform
             jaxb group: 'jakarta.activation', name: 'jakarta.activation-api', version: versionJavaActivation
+            jaxb group: 'com.sun.activation', name: 'jakarta.activation', version: versionJavaActivation
             jaxb group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: versionJaxB
             jaxb group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: versionJaxBruntime
             testCompile group: 'junit', name: 'junit', version: versionJUnit
@@ -135,7 +136,7 @@ allprojects {
                 if (preJDK11) return
                 def additionalModules = (configurations.javafx + configurations.jaxb)
                 options.addStringOption('-module-path', additionalModules.asPath)
-                options.addStringOption('-add-modules', 'java.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml')
+                options.addStringOption('-add-modules', 'jakarta.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml')
             }
         }
 
@@ -172,11 +173,11 @@ allprojects {
 //        }
 
         // configuring Spotbugs
-        apply plugin: 'com.github.spotbugs'
+//        apply plugin: 'com.github.spotbugs'
 
-        spotbugs {
-            ignoreFailures = false
-        }
+//        spotbugs {
+//            ignoreFailures = false
+//        }
 
         tasks.withType(com.github.spotbugs.SpotBugsTask) {
             // Workaround to bug https://github.com/spotbugs/spotbugs/issues/440
