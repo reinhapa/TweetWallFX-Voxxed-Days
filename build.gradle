@@ -22,48 +22,20 @@
  * THE SOFTWARE.
  */
 
-buildscript {
-    repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-        jcenter()
-    }
-
-    dependencies {
-        classpath group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: versionSpotless
-        classpath group: 'com.github.ben-manes', name: 'gradle-versions-plugin', version: versionGradleVersionsPlugin
-        classpath group: 'com.jfrog.bintray.gradle', name: 'gradle-bintray-plugin', version: versionGradleBintrayPlugin
-        classpath group: 'com.netflix.nebula', name: 'gradle-info-plugin', version: versionGradleInfoPlugin
-        classpath group: 'com.netflix.nebula', name: 'nebula-publishing-plugin', version: versionNebulaPublishingPlugin
-        classpath group: 'gradle.plugin.com.github.spotbugs', name: 'spotbugs-gradle-plugin', version: versionSpotbugs
-
-        if (JavaVersion.current().isJava11Compatible()) {
-            classpath group: 'net.ltgt.gradle', name: 'gradle-errorprone-plugin', version: versionGradleErrorpronePlugin4Java11AndLater
-        } else {
-            throw new GradleException("Building with Java major version prior to 11 is not supported.")
-        }
-
-        // VCS dependency required by plugin 'gradle-info-plugin'
-        classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: versionJGit
-        classpath group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: versionSonarqubeGradlePlugin
-        classpath group: 'com.google.gradle', name: 'osdetector-gradle-plugin', version: versionOsdetectorGradlePlugin
-    }
+plugins {
+    id 'base'
+    id 'build-dashboard'
+    id 'com.diffplug.spotless' version '6.5.0'
+    id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'com.github.spotbugs' version '5.0.6'
+    id 'com.google.osdetector' version '1.7.0'
+    id 'nebula.info-dependencies' version '11.3.3'
+    id 'nebula.maven-nebula-publish' version '18.4.0'
+    id 'net.ltgt.errorprone' version '2.0.2'
+    id 'org.sonarqube' version '3.3'
 }
 
-apply plugin: 'build-dashboard'
-apply plugin: 'org.sonarqube'
-apply plugin: 'com.google.osdetector'
-
-// applying Versions plugin
-apply plugin: 'com.github.ben-manes.versions'
-
 ext {
-    releaseDate = new Date()
-    bintrayEnabled = \
-        ('false' != System.getenv('TRAVIS_PULL_REQUEST')) &&
-        null != findProperty('BINTRAY_USER') &&
-        null != findProperty('BINTRAY_KEY')
     javaFxPlatform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'win' : osdetector.os
 }
 
@@ -73,20 +45,13 @@ allprojects {
     description = 'JavaFX based Tweetwall'
 
     repositories {
-        jcenter()
+        mavenLocal()
         mavenCentral()
+        jcenter()
     }
 
-    configurations.all {
-        resolutionStrategy {
-            dependencySubstitution {
-                // workaround for spotbugs not yet supporting JDK 13 class formats
-                substitute module('org.ow2.asm:asm')  with module ("org.ow2.asm:asm:${versionAsm}")
-            }
-        }
-    }
     // configuring Spotless
-    apply plugin: "com.diffplug.gradle.spotless"
+    apply plugin: "com.diffplug.spotless"
 
     spotless {
         format 'textBasedFiles', {
@@ -108,19 +73,29 @@ allprojects {
             indentWithSpaces(4)
             endWithNewline()
         }
-        format 'javaFiles', {
-            target fileTree(project.rootDir) {
-                include '**/*.java'
-                include '**/*.groovy'
-            }
-
-            paddedCell()
+        def closure = {
             trimTrailingWhitespace()
             indentWithSpaces(4)
             endWithNewline()
-            custom('noStarImports', {fileContent -> fileContent.replaceAll(/\nimport (static )?[a-zA-Z0-9.]*[.][\*];\n/, '\n')})
-            custom('noMultipleEmptyLines', {fileContent -> fileContent.replaceAll('\n{3,}', '\n\n')})
-            custom('noEmptyLineBeforeClosingBrace', {fileContent -> fileContent.replaceAll(/\n+(\n *[\}])/, '$1')})
+//            importOrder(
+//                '\\#',    // static imports
+//                'java',   // classes from java root package
+//                'javax',  // classes from javax root package
+//                '',       // any other import
+//            )
+            replaceRegex 'noStarImports', /\nimport (static )?[a-zA-Z0-9.]*[.][\*];\n/, '\n'
+            replaceRegex 'noMultipleEmptyLines', '\n{3,}', '\n\n'
+            replaceRegex 'Remove @author javadoc taglets.', '\n\\s*\\*\\s*@author.*', ''
+            replaceRegex 'Remove trailing empty comment lines.', '\n\\s*\\*(\n\\s*\\*/\n)', '$1'
+            replaceRegex 'Remove empty javadoc', '\n\\s*/\\*\\*\n\\s*\\*/\n', '\n\n'
+            replaceRegex 'Remove empty lines before end of block', '\\n[\\n]+(\\s*})(?=\\n)', '\n$1'
+            licenseHeaderFile rootProject.file('LICENSE.spotlessTemplate')
+        }
+
+        if (plugins.hasPlugin(org.gradle.api.plugins.GroovyPlugin)) {
+            groovy(closure)
+        } else if (plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin)) {
+            java(closure)
         }
     }
 
@@ -144,78 +119,81 @@ allprojects {
         }
 
         dependencies {
-            javafx group: 'org.openjfx', name: 'javafx-base', version: versionJavaFx, classifier: javaFxPlatform
-            javafx group: 'org.openjfx', name: 'javafx-graphics', version: versionJavaFx, classifier: javaFxPlatform
-            javafx group: 'org.openjfx', name: 'javafx-fxml', version: versionJavaFx, classifier: javaFxPlatform
-            javafx group: 'org.openjfx', name: 'javafx-controls', version: versionJavaFx, classifier: javaFxPlatform
-            jaxb group: 'jakarta.activation', name: 'jakarta.activation-api', version: versionJavaActivation
-            jaxb group: 'com.sun.activation', name: 'jakarta.activation', version: versionJavaActivation
-            jaxb group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: versionJaxB
-            jaxb group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: versionJaxBruntime
-            testCompile group: 'junit', name: 'junit', version: versionJUnit
-            testCompile group: 'org.assertj', name: 'assertj-core', version: versionAssertJ
+            javafx group: 'org.openjfx', name: 'javafx-base', version: '18.0.1', classifier: javaFxPlatform
+            javafx group: 'org.openjfx', name: 'javafx-graphics', version: '18.0.1', classifier: javaFxPlatform
+            javafx group: 'org.openjfx', name: 'javafx-fxml', version: '18.0.1', classifier: javaFxPlatform
+            javafx group: 'org.openjfx', name: 'javafx-controls', version: '18.0.1', classifier: javaFxPlatform
+
+            jaxb group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.1.0'
+            jaxb group: 'org.eclipse.angus', name: 'angus-activation', version: '1.0.0'
+            jaxb group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '4.0.0'
+            jaxb group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '3.0.2'
+
+            testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+            testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.22.0'
         }
 
-        jar {
+        ext {
+            getJvmModulePath = { -> (configurations.javafx + configurations.jaxb).asPath}
+            getJvmAdditionalModules = { ->
+                [
+                    'jakarta.activation',
+                    'jakarta.xml.bind',
+                    'javafx.controls',
+                    'javafx.graphics',
+                    'javafx.fxml'
+                ].toUnique().toSorted().join(',')
+            }
+        }
+
+        tasks.named('jar') {
             manifest.attributes provider: 'gradle'
         }
 
-        javadoc {
-            if (JavaVersion.current().isJava11Compatible()) {
-                afterEvaluate {
-                    def additionalModules = (configurations.javafx + configurations.jaxb)
-                    options.addStringOption('-module-path', additionalModules.asPath)
-                    options.addStringOption('-add-modules', 'jakarta.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml')
-                }
-            }
+        tasks.named('javadoc') {
+            options.addStringOption('-module-path', getJvmModulePath())
+            options.addStringOption('-add-modules', getJvmAdditionalModules())
+            enabled = false
         }
 
         tasks.withType(JavaCompile) {
             options.compilerArgs.addAll([
-                    '-Xlint:all',
-                    '-Werror',
-                    '-proc:none',
+                  '-Xlint:-preview',
+                  '--enable-preview',
+                  '-Werror',
+                  '-proc:none',
+                  '--module-path',
+                  getJvmModulePath(),
+                  '--add-modules',
+                  getJvmAdditionalModules(),
             ])
-
-            if (JavaVersion.current().isJava11Compatible()) {
-                afterEvaluate {
-                    def additionalModules = (configurations.javafx + configurations.jaxb)
-                    options.compilerArgs.addAll([
-                            '--module-path',
-                            additionalModules.asPath,
-                            '--add-modules',
-                            'jakarta.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml',
-                    ])
-                }
-            }
         }
 
         tasks.withType(JavaExec) {
-            if (JavaVersion.current().isJava11Compatible()) {
-                afterEvaluate {
-                    def additionalModules = (configurations.javafx + configurations.jaxb)
-                    jvmArgs '--module-path'
-                    jvmArgs additionalModules.asPath
-                    jvmArgs '--add-modules'
-                    jvmArgs 'jakarta.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml'
-                }
-            }
+            jvmArgs '--enable-preview'
+            jvmArgs '--module-path'
+            jvmArgs getJvmModulePath()
+            jvmArgs '--add-modules'
+            jvmArgs getJvmAdditionalModules()
         }
 
         tasks.withType(Test) {
-            if (JavaVersion.current().isJava11Compatible()) {
-                afterEvaluate {
-                    def additionalModules = (configurations.javafx + configurations.jaxb)
-                    jvmArgs '--module-path'
-                    jvmArgs additionalModules.asPath
-                    jvmArgs '--add-modules'
-                    jvmArgs 'jakarta.activation,java.xml.bind,javafx.controls,javafx.graphics,javafx.fxml'
-                }
-            }
+            jvmArgs '--enable-preview'
+            jvmArgs '--module-path'
+            jvmArgs getJvmModulePath()
+            jvmArgs '--add-modules'
+            jvmArgs getJvmAdditionalModules()
         }
 
-        check {
+        tasks.named('check') {
             dependsOn 'javadoc'
+        }
+
+        if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_18)) {
+            // jacoco not yet compatible with JDK18
+            tasks.named('test') {
+                finalizedBy 'jacocoTestReport'
+            }
         }
 
         // configuring Errorprone
@@ -223,36 +201,16 @@ allprojects {
             apply plugin: 'net.ltgt.errorprone'
 
             dependencies {
-                if (JavaVersion.current().isJava11Compatible()) {
-                    errorprone group: 'com.google.errorprone', name: 'error_prone_core', version: versionErrorProneCore
-                } else {
-                    throw new GradleException("Building with Java major version prior to 11 is not supported.")
-                }
+                errorprone group: 'com.google.errorprone', name: 'error_prone_core', version: '2.13.1'
             }
         }
+
 
         // configuring Spotbugs
         apply plugin: 'com.github.spotbugs'
 
         spotbugs {
             ignoreFailures = false
-        }
-
-        tasks.withType(com.github.spotbugs.SpotBugsTask) {
-            // Workaround to bug https://github.com/spotbugs/spotbugs/issues/440
-            def sourceSetName = (name - 'spotbugs').uncapitalize()
-            dependsOn( sourceSets[sourceSetName].classesTaskName)
-
-            reports {
-                xml.enabled = false
-                html.enabled = true
-            }
-
-            if (JavaVersion.current().isJava11Compatible()) {
-                afterEvaluate {
-                    classpath = (classpath + configurations.javafx)
-                }
-            }
         }
 
         // configuring Versions plugin
@@ -267,13 +225,6 @@ allprojects {
                     }
                 }
             }
-        }
-    }
-
-    plugins.withType(org.gradle.api.plugins.GroovyPlugin) {
-        dependencies {
-            compile group: 'org.codehaus.groovy', name: 'groovy-all', version: versionGroovy
-            testCompile group: 'org.spockframework', name: 'spock-core', version: versionSpockFramework
         }
     }
 

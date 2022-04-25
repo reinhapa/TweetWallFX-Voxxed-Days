@@ -30,10 +30,10 @@ import org.tweetwallfx.stepengine.api.DataProvider;
 import org.tweetwallfx.stepengine.api.Step;
 import org.tweetwallfx.stepengine.api.StepEngine.MachineContext;
 import org.tweetwallfx.stepengine.api.config.StepEngineSettings;
+import org.tweetwallfx.stepengine.dataproviders.TweetStreamDataProvider;
 import org.tweetwallfx.stepengine.dataproviders.TweetUserProfileImageDataProvider;
 import org.tweetwallfx.transitions.FlipInXTransition;
 import org.tweetwallfx.tweet.api.Tweet;
-import org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;

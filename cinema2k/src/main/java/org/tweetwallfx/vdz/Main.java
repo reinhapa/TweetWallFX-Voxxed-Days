@@ -70,10 +70,10 @@ public class Main extends Application {
         final TweetwallSettings tweetwallSettings = Configuration.getInstance()
                 .getConfigTyped(TweetwallSettings.CONFIG_KEY, TweetwallSettings.class);
 
-        Optional.ofNullable(tweetwallSettings.getStylesheetResource())
+        Optional.ofNullable(tweetwallSettings.stylesheetResource())
                 .map(ClassLoader.getSystemClassLoader()::getResource).map(java.net.URL::toExternalForm)
                 .ifPresent(scene.getStylesheets()::add);
-        Optional.ofNullable(tweetwallSettings.getStylesheetFile()).ifPresent(scene.getStylesheets()::add);
+        Optional.ofNullable(tweetwallSettings.stylesheetFile()).ifPresent(scene.getStylesheets()::add);
 
         org.apache.logging.log4j.core.config.Configuration config = LoggerContext.getContext().getConfiguration();
         StringPropertyAppender spa = new StringPropertyAppender();
@@ -111,7 +111,7 @@ public class Main extends Application {
             }
         });
 
-        primaryStage.setTitle(tweetwallSettings.getTitle());
+        primaryStage.setTitle(tweetwallSettings.title());
         primaryStage.setScene(scene);
 
         primaryStage.show();

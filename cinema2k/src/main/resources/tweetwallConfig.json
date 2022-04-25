@@ -80,7 +80,7 @@
                 }
             },
             {
-                "dataProviderClassName": "org.tweetwallfx.tweet.stepengine.dataprovider.TweetStreamDataProvider",
+                "dataProviderClassName": "org.tweetwallfx.stepengine.dataproviders.TweetStreamDataProvider",
                 "config": {
                     "historySize": 25,
                     "maxTweets": 5

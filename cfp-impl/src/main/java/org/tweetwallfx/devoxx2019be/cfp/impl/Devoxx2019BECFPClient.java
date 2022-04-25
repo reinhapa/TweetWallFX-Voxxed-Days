@@ -40,8 +40,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ws.rs.core.GenericType;
-
 import org.tweetwallfx.config.Configuration;
 import org.tweetwallfx.devoxx.api.cfp.client.Break;
 import org.tweetwallfx.devoxx.api.cfp.client.CFPClient;
@@ -72,6 +70,8 @@ import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Tag;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Talk;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2TimeSlot;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Track;
+
+import javax.ws.rs.core.GenericType;
 
 public class Devoxx2019BECFPClient implements CFPClient {
 
