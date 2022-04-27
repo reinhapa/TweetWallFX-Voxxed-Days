@@ -27,6 +27,7 @@ apply plugin: 'application'
 //mainClassName = 'org.tweetwallfx.vdz.TestMain'
 //mainClassName = 'org.tweetwallfx.generic.Main'
 mainClassName = 'org.tweetwallfx.vdz.Main'
+//mainClassName = 'org.tweetwallfx.vdz.ScheduleTest'
 
 tasks.withType(JavaExec) {
     main mainClassName
@@ -53,9 +54,11 @@ task('debug', dependsOn: 'classes', type: JavaExec) {
 
 dependencies {
     implementation project(':cfp-impl')
-    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-core', version: versionTweetwallFX
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-2d', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-configuration', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-controls', version: versionTweetwallFX
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-core', version: versionTweetwallFX
+    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-api-cfp', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-cfp-stepengine', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-generic2d', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-stepengine-api', version: versionTweetwallFX
@@ -64,7 +67,6 @@ dependencies {
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-transitions', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-tweet-api', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-tweet-impl-twitter4j', version: versionTweetwallFX
-    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-2d', version: versionTweetwallFX
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'
     implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.5'
 }

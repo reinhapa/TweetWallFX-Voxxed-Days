@@ -71,7 +71,8 @@ import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Talk;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2TimeSlot;
 import org.tweetwallfx.devoxx2019be.cfp.impl.pojo.V2Track;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
+import org.tweetwallfx.voxxed.CFPClientSettings;
 
 public class Devoxx2019BECFPClient implements CFPClient {
 
@@ -98,9 +99,8 @@ public class Devoxx2019BECFPClient implements CFPClient {
                 CFPClientSettings.CONFIG_KEY,
                 CFPClientSettings.class);
 
-        eventUri = cfpClientSettings.getEventUri();
-        votingResultsUri = null; // disabled as a first shot to get the schedule shown
-//        votingResultsUri = cfpClientSettings.getVotingResultsUri();
+        eventUri = cfpClientSettings.eventUri();
+        votingResultsUri = cfpClientSettings.votingResultsUri();
     }
 
     @Override

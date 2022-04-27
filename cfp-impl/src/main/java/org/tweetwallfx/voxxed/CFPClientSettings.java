@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 TweetWallFX
+ * Copyright (c) 2019-2022 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.tweetwallfx.devoxx2019be.cfp.impl;
+package org.tweetwallfx.voxxed;
 
 import java.util.Objects;
 import org.tweetwallfx.config.ConfigurationConverter;
@@ -37,7 +37,7 @@ public final class CFPClientSettings {
      * Configuration key under which the data for this Settings object is stored
      * in the configuration data map.
      */
-    public static final String CONFIG_KEY = "devoxxCFP";
+    public static final String CONFIG_KEY = "voxxedDayCFP";
     private String eventUri;
     private String votingResultsUri;
 
@@ -46,7 +46,7 @@ public final class CFPClientSettings {
      *
      * @return the Event URI from where all standard calls are executed
      */
-    public String getEventUri() {
+    public String eventUri() {
         return Objects.requireNonNull(eventUri, "eventUri must not be null!");
     }
 
@@ -65,7 +65,7 @@ public final class CFPClientSettings {
      *
      * @return the Query Uri from where voting results are retrieved
      */
-    public String getVotingResultsUri() {
+    public String votingResultsUri() {
         return votingResultsUri;
     }
 
@@ -76,15 +76,14 @@ public final class CFPClientSettings {
      * retrieved
      */
     public void setVotingResultsUri(final String votingResultsUri) {
-        Objects.requireNonNull(votingResultsUri, "votingResultsUri must not be null!");
         this.votingResultsUri = votingResultsUri;
     }
 
     @Override
     public String toString() {
         return createToString(this, map(
-                "eventUri", getEventUri(),
-                "votingResultsUri", getVotingResultsUri()
+                "eventUri", eventUri(),
+                "votingResultsUri", votingResultsUri()
         )) + " extends " + super.toString();
     }
 

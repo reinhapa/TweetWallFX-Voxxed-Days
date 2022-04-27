@@ -3,9 +3,13 @@
         "extendedMode": true
     },
     "tweetwall": {
-        "query": "#vdz19 OR @VoxxedZurich OR #itWillBeFun",
-        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2019!",
+        "query": "#vdz22 OR @VoxxedZurich OR #itWillBeFun",
+        "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2022!",
         "stylesheetResource": "tweetwall.css"
+    },
+    "voxxedDayCFP": {
+        "eventUri": "https://vdz22.cfp.dev/api/public",
+        "votingResultsUri": null
     },
     "filterchains": {
         "chains": {

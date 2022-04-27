@@ -61,6 +61,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        LOG.info("starting...");
         new Thread(this::mqttLoop).start();
 
         BorderPane borderPane = new BorderPane();
