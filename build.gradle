@@ -211,6 +211,7 @@ allprojects {
 
         spotbugs {
             ignoreFailures = false
+            excludeFilter = rootProject.file('spotbugs-exclude.xml')
         }
 
         // configuring Versions plugin

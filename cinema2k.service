@@ -1,0 +1,21 @@
+[Unit]
+Description=TweetWallFX Cinema 2k
+After=network.target
+
+[Service]
+Environment="JAVA_HOME=/usr/local/eXist"
+Environment="SERVER=development"
+WorkingDirectory=/usr/local/eXist
+User={whoami}
+Group={whoami}
+ExecStart=/usr/bin/java \
+-Dexist.home=/usr/local/eXist \
+-Djetty.home=/usr/local/eXist/tools/jetty \
+-Dfile.encoding=UTF-8 \
+-Djava.endorsed.dirs=/usr/local/eXistd/lib/endorsed \
+-Djava.awt.headless=true \
+-jar start.jar jetty
+ExecStop=/usr/bin/java -jar start.jar shutdown -u admin -p {your admin pass}
+
+[Install]
+WantedBy=multi-user.target

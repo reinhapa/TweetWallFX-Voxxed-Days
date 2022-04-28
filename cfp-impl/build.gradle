@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 TweetWallFX
+ * Copyright (c) 2019-2022 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 dependencies {
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-configuration', version: versionTweetwallFX
     implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-api-cfp', version: versionTweetwallFX
-//    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-utility', version: versionTweetwallFX
 
     runtimeOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'
 

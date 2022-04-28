@@ -26,6 +26,11 @@ import org.apache.logging.log4j.Logger;
 import org.tweetwallfx.devoxx.api.cfp.client.CFPClient;
 import org.tweetwallfx.devoxx.api.cfp.client.Rooms;
 import org.tweetwallfx.devoxx.api.cfp.client.Schedule;
+import org.tweetwallfx.devoxx.api.cfp.client.ScheduleSlot;
+
+import java.time.Instant;
+import java.time.OffsetTime;
+import java.time.ZoneId;
 
 public class ScheduleTest {
     private static final Logger LOG = LogManager.getLogger(ScheduleTest.class);
@@ -42,6 +47,16 @@ public class ScheduleTest {
     }
 
     private static void schedule(Schedule schedule) {
-        LOG.info("schedule: {}", schedule);
+        final ScheduleSlot slot = schedule.getSlots().get(0);
+
+        ZoneId zoneId = ZoneId.of("Europe/Zurich");
+        OffsetTime now = OffsetTime.parse("07:00Z");
+        now = OffsetTime.parse("19:10:53.175482346+02:00");
+        now = OffsetTime.parse("09:00:00.0+02:00");
+
+        Instant instant = Instant.ofEpochMilli(slot.getToTimeMillis());
+        OffsetTime offsetTime = OffsetTime.ofInstant(instant, zoneId);
+        boolean after = offsetTime.isAfter(now.plusMinutes(10));
+        LOG.info("slot: {} {}", slot, after);
     }
 }

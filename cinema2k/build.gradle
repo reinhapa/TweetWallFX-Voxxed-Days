@@ -32,7 +32,8 @@ mainClassName = 'org.tweetwallfx.vdz.Main'
 tasks.withType(JavaExec) {
     main mainClassName
     jvmArgs '-Dorg.tweetwallfx.scheduledata.day=tuesday'
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=10:00Z'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+02:00'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
     jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
 //    jvmArgs '-Djavafx.verbose=true'
@@ -44,7 +45,7 @@ tasks.withType(JavaExec) {
     jvmArgs '-Dmqtt.username=tweetwall'
     jvmArgs '-Dmqtt.password=Tw€€twall'
 //    jvmArgs '-Dmqtt.client.id=tweetwall-0'
-//    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044'
+//    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:1044'
 }
 
 task('debug', dependsOn: 'classes', type: JavaExec) {
