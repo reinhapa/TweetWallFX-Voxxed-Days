@@ -55,10 +55,10 @@
 }
 
 .wordle {
-    -fx-graphic: url('vdz19-oldlogo-left.png');
+    -fx-graphic: url('vdz22-background.png');
     -fx-background-color: black;
 /*
-    -fx-background-graphic: url('vdz19-oldlogo-left.png');
+    -fx-background-graphic: url('vdz22-background.png');
 */
 /*
     -fx-second-graphic: none;
