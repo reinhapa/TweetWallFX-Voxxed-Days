@@ -154,13 +154,16 @@ public class FlipInTweets implements Step {
         }
         return vbox;
     }
+    static String fixup(String source) {
+        return source.replaceAll("[\n\r]+", "|").replaceAll("[\u200D]","");
+    }
 
     private HBox createSingleTweetDisplay(final Tweet displayTweet,
             final TweetUserProfileImageDataProvider userImageProvider,
             final double maxWidth) {
         // shorten tweet text here if needed
         String textWithoutMediaUrls = displayTweet.getDisplayEnhancedText();
-        Text text = new Text(textWithoutMediaUrls.replaceAll("[\n\r]", "|"));
+        Text text = new Text(fixup(textWithoutMediaUrls));
         text.setCache(true);
         text.setCacheHint(CacheHint.SPEED);
         text.getStyleClass().add("tweetText");
