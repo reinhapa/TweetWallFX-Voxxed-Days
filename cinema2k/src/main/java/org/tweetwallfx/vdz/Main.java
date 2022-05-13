@@ -162,6 +162,7 @@ public class Main extends Application {
             } catch (MqttException e) {
                 LOG.error("Failure while handling MQTT", e);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 LOG.error("Interrupted while waiting", e);
                 return;
             }

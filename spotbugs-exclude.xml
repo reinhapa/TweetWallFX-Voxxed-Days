@@ -26,4 +26,8 @@
         <Package name="org.tweetwallfx.voxxed.dto" />
         <Bug code="EI2" />
     </Match>
+    <Match>
+        <Class name="org.tweetwallfx.vdz.Main" />
+        <Bug code="THROWS" />
+    </Match>
 </FindBugsFilter>

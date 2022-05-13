@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class TestMain extends Application {
 
   @Override
-  public void start(Stage primaryStage) throws Exception {
+  public void start(Stage primaryStage) {
     Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
     System.out.println("Visual bounds");
     System.out.println("min x \t" + visualBounds.getMinX());

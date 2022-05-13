@@ -24,6 +24,7 @@
 package org.tweetwallfx.vdz.steps;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -119,7 +120,7 @@ public class ShowSchedule extends FlipInTweets {
             return session;
         } catch (IOException ex) {
             LOGGER.error(ex);
-            throw new RuntimeException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
