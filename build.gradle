@@ -36,7 +36,7 @@ plugins {
 }
 
 ext {
-    javaFxPlatform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'win' : osdetector.os
+    javaFxPlatform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'win' : osdetector.arch == 'aarch_64' ? 'linux-aarch64' : osdetector.os
 }
 
 allprojects {
