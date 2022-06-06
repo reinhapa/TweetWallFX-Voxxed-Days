@@ -37,7 +37,8 @@ plugins {
 
 ext {
     javaFxPlatform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'win' : osdetector.os
-    javaFxPlatform = osdetector.arch == 'aarch_64' ? javaFxPlatform + '-aarch64' : javaFxPlatform;
+    javaFxPlatform = osdetector.arch == 'aarch_64' ? javaFxPlatform + '-aarch64' : javaFxPlatform
+    javaFxPlatform = osdetector.arch == 'arm_32' ? javaFxPlatform + '-arm32-monocle' : javaFxPlatform
 }
 
 allprojects {
@@ -131,7 +132,7 @@ allprojects {
             jaxb 'jakarta.activation:jakarta.activation-api:2.1.0'
             jaxb 'org.eclipse.angus:angus-activation:1.0.0'
             jaxb 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-            jaxb 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+            jaxb 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
 
             testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
             testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'

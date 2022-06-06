@@ -36,8 +36,10 @@ tasks.withType(JavaExec) {
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
     jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
+    jvmArgs '-Dprism.forceGPU=true'
 //    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.verbose=true'
+//    jvmArgs '-Dglass.platform=gtk'
     jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
     jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
     jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
