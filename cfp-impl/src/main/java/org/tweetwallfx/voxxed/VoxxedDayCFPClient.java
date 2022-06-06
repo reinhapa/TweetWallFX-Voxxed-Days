@@ -25,7 +25,17 @@ package org.tweetwallfx.voxxed;
 
 import jakarta.ws.rs.core.GenericType;
 import org.tweetwallfx.config.Configuration;
-import org.tweetwallfx.devoxx.api.cfp.client.*;
+import org.tweetwallfx.devoxx.api.cfp.client.CFPClient;
+import org.tweetwallfx.devoxx.api.cfp.client.Event;
+import org.tweetwallfx.devoxx.api.cfp.client.Events;
+import org.tweetwallfx.devoxx.api.cfp.client.ProposalTypes;
+import org.tweetwallfx.devoxx.api.cfp.client.Rooms;
+import org.tweetwallfx.devoxx.api.cfp.client.Schedule;
+import org.tweetwallfx.devoxx.api.cfp.client.Schedules;
+import org.tweetwallfx.devoxx.api.cfp.client.Speaker;
+import org.tweetwallfx.devoxx.api.cfp.client.Talk;
+import org.tweetwallfx.devoxx.api.cfp.client.Tracks;
+import org.tweetwallfx.devoxx.api.cfp.client.VotingResults;
 import org.tweetwallfx.voxxed.dto.VRoom;
 import org.tweetwallfx.voxxed.dto.VScheduleSLot;
 

@@ -1,7 +1,7 @@
 /*
- * The MIT License
+ * The MIT License (MIT)
  *
- * Copyright 2017-2018 TweetWallFX
+ * Copyright (c) 2017-2018 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,8 +53,6 @@ import javafx.scene.text.Text;
 
 /**
  * Devox 2017 Show Schedule (Flip In) Animation Step
- *
- * @author Sven Reimers
  */
 public class ShowSchedule extends FlipInTweets {
 

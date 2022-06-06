@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 TweetWallFX
+ * Copyright (c) $YEAR TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,3 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.tweetwallfx.vdz.steps;
-
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class FlipInTweetsTest {
-    @Test
-    void testFixup() {
-        assertThat(FlipInTweets.fixup("Join\nX")).isEqualTo("Join|X");
-        assertThat(FlipInTweets.fixup("Join\rX")).isEqualTo("Join|X");
-        assertThat(FlipInTweets.fixup("Join\r\nX")).isEqualTo("Join|X");
-        assertThat(FlipInTweets.fixup("Join\uD83D\uDC69\u200DX")).isEqualTo("Join\uD83D\uDC69X");
-    }
-}

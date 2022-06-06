@@ -23,10 +23,10 @@
  */
 
 dependencies {
-    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-configuration', version: versionTweetwallFX
-    implementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-api-cfp', version: versionTweetwallFX
+    implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
+    implementation 'org.tweetwallfx:tweetwallfx-devoxx-api-cfp:' + versionTweetwallFX
 
-    runtimeOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'
+    runtimeOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
 
-    testImplementation group: 'org.tweetwallfx', name: 'tweetwallfx-devoxx-cfp-test', version: versionTweetwallFX
+    testImplementation 'org.tweetwallfx:tweetwallfx-devoxx-cfp-test:' + versionTweetwallFX
 }

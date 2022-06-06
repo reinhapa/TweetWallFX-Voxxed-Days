@@ -23,8 +23,9 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-import static org.tweetwallfx.util.ToString.*;
+import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
+import static org.tweetwallfx.util.ToString.mapOf;
 
 public class VSessionType {
     private int id;
