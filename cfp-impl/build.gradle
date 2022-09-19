@@ -26,7 +26,7 @@ dependencies {
     implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-devoxx-api-cfp:' + versionTweetwallFX
 
-    runtimeOnly 'org.apache.logging.log4j:log4j-core:2.18.0'
+    runtimeOnly 'org.apache.logging.log4j:log4j-core:2.19.0'
 
     testImplementation 'org.tweetwallfx:tweetwallfx-devoxx-cfp-test:' + versionTweetwallFX
 }
