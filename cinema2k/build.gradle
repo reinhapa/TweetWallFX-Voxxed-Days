@@ -31,13 +31,11 @@ mainClassName = 'org.tweetwallfx.vdz.Main'
 
 tasks.withType(JavaExec) {
     mainClass = mainClassName
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.day=tuesday'
-//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+02:00'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.day=thursday'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
-//    jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
+    jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
-    jvmArgs '-Dprism.forceGPU=true'
-//    jvmArgs '-Djavafx.verbose=true'
     jvmArgs '-Dprism.forceGPU=true'
     jvmArgs '-Dprism.verbose=true'
 //    jvmArgs '-Dglass.platform=gtk'
