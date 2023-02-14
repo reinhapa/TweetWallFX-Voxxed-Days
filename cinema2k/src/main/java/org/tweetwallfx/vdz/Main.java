@@ -43,7 +43,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.tweetwallfx.config.Configuration;
 import org.tweetwallfx.config.TweetwallSettings;
-import org.tweetwallfx.tweet.StringPropertyAppender;
 import org.tweetwallfx.tweet.api.Tweeter;
 import org.tweetwallfx.twod.TagTweets;
 

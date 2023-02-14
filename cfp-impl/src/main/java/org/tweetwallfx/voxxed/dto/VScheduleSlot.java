@@ -36,7 +36,7 @@ import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
 import static org.tweetwallfx.util.ToString.mapOf;
 
-public class VScheduleSLot {
+public class VScheduleSlot {
     private int id;
     private ZonedDateTime fromDate;
     private ZonedDateTime toDate;
@@ -158,9 +158,9 @@ public class VScheduleSLot {
         return zonedDateTime.format(DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault()));
     }
 
-    public static Schedule schedule(List<VScheduleSLot> vSlots) {
+    public static Schedule schedule(List<VScheduleSlot> vSlots) {
         Schedule schedule = new Schedule();
-        schedule.setSlots(vSlots.stream().map(VScheduleSLot::scheduleSlot).toList());
+        schedule.setSlots(vSlots.stream().map(VScheduleSlot::scheduleSlot).toList());
         return schedule;
     }
 

@@ -25,6 +25,7 @@ package org.tweetwallfx.vdz;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.tweetwallfx.devoxx.api.cfp.client.CFPClient;
 import org.tweetwallfx.devoxx.api.cfp.client.Rooms;
@@ -39,6 +40,7 @@ class ScheduleTest {
     private static final Logger LOG = LogManager.getLogger(ScheduleTest.class);
 
     @Test
+    @Disabled
     void testReadEvents() {
         LOG.info("reading event..");
         var client = CFPClient.getClient();

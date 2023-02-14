@@ -86,7 +86,7 @@
 
 .wordle .logo {
     -fx-translate-x: 0;
-    -fx-translate-y: -135;
+    -fx-translate-y: 0;
 }
 
 .wordle .tag {

@@ -37,7 +37,7 @@ import org.tweetwallfx.devoxx.api.cfp.client.Talk;
 import org.tweetwallfx.devoxx.api.cfp.client.Tracks;
 import org.tweetwallfx.devoxx.api.cfp.client.VotingResults;
 import org.tweetwallfx.voxxed.dto.VRoom;
-import org.tweetwallfx.voxxed.dto.VScheduleSLot;
+import org.tweetwallfx.voxxed.dto.VScheduleSlot;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ import static org.tweetwallfx.devoxx.api.cfp.client.impl.RestCallHelper.readOpti
 public class VoxxedDayCFPClient implements CFPClient {
     private static final GenericType<List<VRoom>> GT_ROOMS = new GenericType<>() {
     };
-    private static final GenericType<List<VScheduleSLot>> GT_SCHEDULE_SLOTS = new GenericType<>() {
+    private static final GenericType<List<VScheduleSlot>> GT_SCHEDULE_SLOTS = new GenericType<>() {
     };
 
     private static final GenericType<List<Speaker>> GT_SPEAKER = new GenericType<>() {
@@ -101,7 +101,7 @@ public class VoxxedDayCFPClient implements CFPClient {
 
     @Override
     public Optional<Schedule> getSchedule(final String day) {
-        return readOptionalFrom(eventBaseUri + "/schedules/" + day, GT_SCHEDULE_SLOTS).map(VScheduleSLot::schedule);
+        return readOptionalFrom(eventBaseUri + "/schedules/" + day, GT_SCHEDULE_SLOTS).map(VScheduleSlot::schedule);
     }
 
     @Override
