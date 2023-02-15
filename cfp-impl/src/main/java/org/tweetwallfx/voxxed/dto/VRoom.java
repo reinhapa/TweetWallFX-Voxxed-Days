@@ -36,6 +36,7 @@ public class VRoom {
     private int id;
     private String name;
     private int capacity;
+    private int weight;
 
     public void setId(int id) {
         this.id = id;
@@ -47,6 +48,10 @@ public class VRoom {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public Room room() {
@@ -69,7 +74,8 @@ public class VRoom {
         return createToString(this, mapOf(
                 mapEntry("id", id),
                 mapEntry("name", name),
-                mapEntry("capacity", capacity)
+                mapEntry("capacity", capacity),
+                mapEntry("weight", weight)
         ), super.toString());
     }
 }

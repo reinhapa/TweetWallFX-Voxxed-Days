@@ -36,6 +36,7 @@ public class VSpeaker {
     private int id;
     private String firstName;
     private String lastName;
+    private String fullName;
     private String bio;
     private String company;
     private String imageUrl;
@@ -53,6 +54,10 @@ public class VSpeaker {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public void setBio(String bio) {
@@ -101,6 +106,7 @@ public class VSpeaker {
                 mapEntry("id", id),
                 mapEntry("firstName", firstName),
                 mapEntry("lastName", lastName),
+                mapEntry("fullName", fullName),
                 mapEntry("bio", bio),
                 mapEntry("company", company),
                 mapEntry("imageUrl", imageUrl),

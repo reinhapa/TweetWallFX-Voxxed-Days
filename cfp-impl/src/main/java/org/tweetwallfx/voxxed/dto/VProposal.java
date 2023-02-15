@@ -37,6 +37,7 @@ public class VProposal {
     private int id;
     private String title;
     private String description;
+    private String summary;
     private URL afterVideoURL;
     private String audienceLevel;
     private VTrack track;
@@ -51,6 +52,10 @@ public class VProposal {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public void setTags(List<VTag> tags) {
@@ -101,6 +106,7 @@ public class VProposal {
                 mapEntry("id", id),
                 mapEntry("title", title),
                 mapEntry("description", description),
+                mapEntry("summary", summary),
                 mapEntry("afterVideoURL", afterVideoURL),
                 mapEntry("audienceLevel", audienceLevel),
                 mapEntry("track", track),

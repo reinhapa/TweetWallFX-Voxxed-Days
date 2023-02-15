@@ -36,17 +36,18 @@ import java.time.Instant;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 
+@Disabled
 class ScheduleTest {
     private static final Logger LOG = LogManager.getLogger(ScheduleTest.class);
 
     @Test
-    @Disabled
     void testReadEvents() {
         LOG.info("reading event..");
         var client = CFPClient.getClient();
         client.getRooms().ifPresent(ScheduleTest::rooms);
-        client.getSchedule("tuesday").ifPresent(ScheduleTest::schedule);
+        client.getSchedule("thursday").ifPresent(ScheduleTest::schedule);
     }
+
 
     private static void rooms(Rooms rooms) {
         LOG.info("rooms: {}", rooms);
