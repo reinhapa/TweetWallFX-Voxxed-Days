@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 TweetWallFX
+ * Copyright (c) 2015-2023 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,10 +77,8 @@ public class Main extends Application {
                 .ifPresent(scene.getStylesheets()::add);
         Optional.ofNullable(tweetwallSettings.stylesheetFile()).ifPresent(scene.getStylesheets()::add);
 
-        org.apache.logging.log4j.core.config.Configuration config = LoggerContext.getContext().getConfiguration();
         StringPropertyAppender spa = new StringPropertyAppender();
         spa.start();
-        LoggerConfig rootLogger = config.getRootLogger();
 
         HBox statusLineHost = new HBox();
         Text statusLineText = new Text();
@@ -94,22 +92,11 @@ public class Main extends Application {
         scene.setOnKeyTyped((KeyEvent event) -> {
             if (event.isMetaDown()) {
                 switch (event.getCharacter()) {
-                case "d": {
-                    if (null == statusLineHost.getParent()) {
-                        borderPane.setBottom(statusLineHost);
-                        rootLogger.addAppender(spa, Level.TRACE, null);
-                    } else {
-                        borderPane.getChildren().remove(statusLineHost);
-                        rootLogger.removeAppender(spa.getName());
-                    }
-                    break;
-                }
-                case "x": {
-                    exitCode.set(Integer.valueOf(0));
-                    return;
-                }
-                default:
-                }
+                    case "d" -> toggleStatusLine(borderPane, spa, statusLineHost);
+                    case "f" -> primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                    case "x" -> exitCode.set(Integer.valueOf(0));
+                    default -> {}
+                };
             }
         });
 
@@ -118,6 +105,17 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.setFullScreen(!Boolean.getBoolean("org.tweetwallfx.disable-full-screen"));
+    }
+
+    private static void toggleStatusLine(BorderPane borderPane, StringPropertyAppender spa, HBox statusLineHost) {
+        LoggerConfig rootLogger = LoggerContext.getContext().getConfiguration().getRootLogger();
+        if (null == statusLineHost.getParent()) {
+            borderPane.setBottom(statusLineHost);
+            rootLogger.addAppender(spa, Level.TRACE, null);
+        } else {
+            borderPane.getChildren().remove(statusLineHost);
+            rootLogger.removeAppender(spa.getName());
+        }
     }
 
     @Override
@@ -157,8 +155,7 @@ public class Main extends Application {
                         Platform.exit();
                         return;
                     }
-
-                    TimeUnit.SECONDS.sleep(5);
+                    TimeUnit.MILLISECONDS.sleep(500);
                 }
             } catch (MqttException e) {
                 LOG.error("Failure while handling MQTT", e);
