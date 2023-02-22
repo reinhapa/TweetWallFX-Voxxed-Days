@@ -48,7 +48,6 @@ class ScheduleTest {
         client.getSchedule("thursday").ifPresent(ScheduleTest::schedule);
     }
 
-
     private static void rooms(Rooms rooms) {
         LOG.info("rooms: {}", rooms);
     }
