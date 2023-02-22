@@ -124,6 +124,8 @@ allprojects {
         }
 
         dependencies {
+            implementation 'org.slf4j:slf4j-api:2.0.6'
+
             javafx 'org.openjfx:javafx-base:19.0.2.1:' + javaFxPlatform
             javafx 'org.openjfx:javafx-graphics:19.0.2.1:' + javaFxPlatform
             javafx 'org.openjfx:javafx-fxml:19.0.2.1:' + javaFxPlatform

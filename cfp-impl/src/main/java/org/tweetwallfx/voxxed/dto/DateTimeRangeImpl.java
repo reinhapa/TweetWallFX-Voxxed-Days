@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 TweetWallFX
+ * Copyright (c) 2017-2023 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.tweetwallfx.voxxed.dto;
 
-dependencies {
-    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
-    implementation 'org.tweetwallfx:tweetwallfx-conference-api:' + versionTweetwallFX
-    implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
+import org.tweetwallfx.conference.api.DateTimeRange;
 
-    runtimeOnly 'org.glassfish.jersey.core:jersey-client:3.1.1'
-    runtimeOnly 'org.glassfish.jersey.inject:jersey-hk2:3.1.1'
-    runtimeOnly 'org.glassfish.jersey.media:jersey-media-json-jackson:3.1.1'
-    runtimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+import java.time.Instant;
+
+record DateTimeRangeImpl(Instant getStart, Instant getEnd) implements DateTimeRange {
 }

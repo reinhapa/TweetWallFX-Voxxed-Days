@@ -23,16 +23,16 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-import org.tweetwallfx.devoxx.api.cfp.client.Room;
-import org.tweetwallfx.devoxx.api.cfp.client.Rooms;
+import org.tweetwallfx.conference.api.Room;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
 import static org.tweetwallfx.util.ToString.mapOf;
 
-public class VRoom {
+public class VRoom implements Room {
     private int id;
     private String name;
     private int capacity;
@@ -54,21 +54,6 @@ public class VRoom {
         this.weight = weight;
     }
 
-    public Room room() {
-        Room room = new Room();
-        room.setId(Integer.toString(id));
-        room.setName(name);
-        room.setCapacity(capacity);
-        room.setSetup(Room.Type.theatre);
-        return room;
-    }
-
-    public static Rooms rooms(List<VRoom> vRooms) {
-        Rooms rooms = new Rooms();
-        rooms.setRooms(vRooms.stream().map(VRoom::room).toList());
-        return rooms;
-    }
-
     @Override
     public String toString() {
         return createToString(this, mapOf(
@@ -77,5 +62,43 @@ public class VRoom {
                 mapEntry("capacity", capacity),
                 mapEntry("weight", weight)
         ), super.toString());
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public int getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof VRoom room) {
+            return id == room.id && Objects.equals(name, room.name);
+        }
+        return false;
+    }
+
+    @Override
+    public int compareTo(Room o) {
+        return name.compareTo(o.getName());
     }
 }

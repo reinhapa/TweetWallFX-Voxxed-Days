@@ -66,7 +66,7 @@ public class Main extends Application {
         new Thread(this::mqttLoop).start();
 
         BorderPane borderPane = new BorderPane();
-        Scene scene = new Scene(borderPane, 1920, 1280);
+        Scene scene = new Scene(borderPane, 1920, 1080);
         borderPane.getStyleClass().add("splash");
 
         final TweetwallSettings tweetwallSettings = Configuration.getInstance()

@@ -23,11 +23,17 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
+import org.tweetwallfx.conference.api.SessionType;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
 import static org.tweetwallfx.util.ToString.mapOf;
 
-public class VSessionType {
+public class VSessionType implements SessionType {
     private int id;
     private String name;
     private int duration;
@@ -69,5 +75,35 @@ public class VSessionType {
                 mapEntry("description", description),
                 mapEntry("cssColor", cssColor)
         ), super.toString());
+    }
+
+    @Override
+    public String getId() {
+        return Integer.toString(id);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Optional<String> getDescription() {
+        return Optional.ofNullable(description);
+    }
+
+    @Override
+    public Optional<String> getColor() {
+        return Optional.ofNullable(cssColor);
+    }
+
+    @Override
+    public Duration getDuration() {
+        return Duration.of(duration, ChronoUnit.MINUTES);
+    }
+
+    @Override
+    public boolean isPause() {
+        return isPause;
     }
 }

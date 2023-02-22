@@ -31,13 +31,13 @@ import static org.tweetwallfx.util.ToString.map;
 /**
  * POJO for reading Settings concerning Devoxx CFP Client.
  */
-public final class CFPClientSettings {
+public final class ConferenceClientSettings {
 
     /**
      * Configuration key under which the data for this Settings object is stored
      * in the configuration data map.
      */
-    public static final String CONFIG_KEY = "voxxedDayCFP";
+    public static final String CONFIG_KEY = "voxxedDayConferenceClient";
     private String eventUri;
     private String votingResultsUri;
 
@@ -89,18 +89,18 @@ public final class CFPClientSettings {
 
     /**
      * Service implementation converting the configuration data of the root key
-     * {@link CFPClientSettings#CONFIG_KEY} into {@link CFPClientSettings}.
+     * {@link ConferenceClientSettings#CONFIG_KEY} into {@link ConferenceClientSettings}.
      */
     public static class Converter implements ConfigurationConverter {
 
         @Override
         public String getResponsibleKey() {
-            return CFPClientSettings.CONFIG_KEY;
+            return ConferenceClientSettings.CONFIG_KEY;
         }
 
         @Override
         public Class<?> getDataClass() {
-            return CFPClientSettings.class;
+            return ConferenceClientSettings.class;
         }
     }
 }

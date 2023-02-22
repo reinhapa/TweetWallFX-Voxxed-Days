@@ -23,19 +23,11 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-import org.tweetwallfx.devoxx.api.cfp.client.Tag;
-
 public class VTag {
     private String name;
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Tag tag() {
-        Tag tag = new Tag();
-        tag.setValue(name);
-        return tag;
     }
 
     @Override

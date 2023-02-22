@@ -23,16 +23,19 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-import org.tweetwallfx.devoxx.api.cfp.client.Speaker;
-import org.tweetwallfx.devoxx.api.cfp.client.SpeakerReference;
+import org.tweetwallfx.conference.api.Speaker;
+import org.tweetwallfx.conference.api.Talk;
 
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
 import static org.tweetwallfx.util.ToString.mapOf;
 
-public class VSpeaker {
+public class VSpeaker implements Speaker {
     private int id;
     private String firstName;
     private String lastName;
@@ -84,22 +87,6 @@ public class VSpeaker {
         this.ref = ref;
     }
 
-    public SpeakerReference speakerReference() {
-        SpeakerReference speakerReference = new SpeakerReference();
-        speakerReference.setName(String.format("%s %s", firstName, lastName));
-        return speakerReference;
-    }
-
-    public Speaker speaker() {
-        Speaker speaker = new Speaker();
-        speaker.setFirstName(firstName);
-        speaker.setLastName(lastName);
-        speaker.setBio(bio);
-        speaker.setCompany(company);
-        speaker.setAvatarURL(imageUrl);
-        return speaker;
-    }
-
     @Override
     public String toString() {
         return createToString(this, mapOf(
@@ -114,5 +101,45 @@ public class VSpeaker {
                 mapEntry("userName", userName),
                 mapEntry("ref", ref)
         ), super.toString());
+    }
+
+    @Override
+    public String getAvatarURL() {
+        return imageUrl;
+    }
+
+    @Override
+    public String getId() {
+        return Integer.toString(id);
+    }
+
+    @Override
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @Override
+    public String getFullName() {
+        return fullName;
+    }
+
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public Map<String, String> getSocialMedia() {
+        return Map.of("twitter", twitterHandle);
+    }
+
+    @Override
+    public List<Talk> getTalks() {
+        return null;
+    }
+
+    @Override
+    public Optional<Speaker> reload() {
+        return Optional.of(this);
     }
 }

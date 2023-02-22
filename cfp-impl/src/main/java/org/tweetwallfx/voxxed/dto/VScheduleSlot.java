@@ -23,20 +23,22 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-import org.tweetwallfx.devoxx.api.cfp.client.Schedule;
-import org.tweetwallfx.devoxx.api.cfp.client.ScheduleSlot;
+import org.tweetwallfx.conference.api.DateTimeRange;
+import org.tweetwallfx.conference.api.Room;
+import org.tweetwallfx.conference.api.ScheduleSlot;
+import org.tweetwallfx.conference.api.Talk;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
 import static org.tweetwallfx.util.ToString.mapOf;
 
-public class VScheduleSlot {
+public class VScheduleSlot implements ScheduleSlot {
     private int id;
     private ZonedDateTime fromDate;
     private ZonedDateTime toDate;
@@ -133,37 +135,6 @@ public class VScheduleSlot {
         this.totalFavourites = totalFavourites;
     }
 
-    public ScheduleSlot scheduleSlot() {
-        ScheduleSlot scheduleSlot = new ScheduleSlot();
-        scheduleSlot.setSlotId(Integer.toString(id));
-        Optional.ofNullable(fromDate).ifPresent(from -> {
-            scheduleSlot.setFromTime(toTime(from));
-            scheduleSlot.setFromTimeMillis(from.toEpochSecond() * 1000);
-        });
-        Optional.ofNullable(toDate).ifPresent(to -> {
-            scheduleSlot.setToTime(toTime(to));
-            scheduleSlot.setToTimeMillis(to.toEpochSecond() * 1000);
-        });
-        Optional.ofNullable(room).map(VRoom::room).ifPresent(r -> {
-            scheduleSlot.setRoomId(r.getId());
-            scheduleSlot.setRoomName(r.getName());
-            scheduleSlot.setRoomCapacity(r.getCapacity());
-            scheduleSlot.setRoomSetup(r.getSetup().name());
-        });
-        Optional.ofNullable(proposal).map(VProposal::talk).ifPresent(scheduleSlot::setTalk);
-        return scheduleSlot;
-    }
-
-    private String toTime(ZonedDateTime zonedDateTime) {
-        return zonedDateTime.format(DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault()));
-    }
-
-    public static Schedule schedule(List<VScheduleSlot> vSlots) {
-        Schedule schedule = new Schedule();
-        schedule.setSlots(vSlots.stream().map(VScheduleSlot::scheduleSlot).toList());
-        return schedule;
-    }
-
     @Override
     public String toString() {
         return createToString(this, mapOf(
@@ -187,5 +158,35 @@ public class VScheduleSlot {
                 mapEntry("tags", tags),
                 mapEntry("totalFavourites", totalFavourites)
         ), super.toString());
+    }
+
+    @Override
+    public String getId() {
+        return Integer.toString(id);
+    }
+
+    @Override
+    public DateTimeRange getDateTimeRange() {
+        return new DateTimeRangeImpl(fromDate.toInstant(), toDate.toInstant());
+    }
+
+    @Override
+    public OptionalInt getFavoriteCount() {
+        return OptionalInt.of(totalFavourites);
+    }
+
+    @Override
+    public boolean isOverflow() {
+        return overflow;
+    }
+
+    @Override
+    public Room getRoom() {
+        return room;
+    }
+
+    @Override
+    public Optional<Talk> getTalk() {
+        return Optional.ofNullable(proposal);
     }
 }

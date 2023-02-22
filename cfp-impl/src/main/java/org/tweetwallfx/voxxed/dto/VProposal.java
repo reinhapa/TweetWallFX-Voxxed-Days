@@ -23,17 +23,23 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-import org.tweetwallfx.devoxx.api.cfp.client.Talk;
+import org.tweetwallfx.conference.api.ScheduleSlot;
+import org.tweetwallfx.conference.api.SessionType;
+import org.tweetwallfx.conference.api.Speaker;
+import org.tweetwallfx.conference.api.Talk;
+import org.tweetwallfx.conference.api.Track;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapOf;
 import static org.tweetwallfx.util.ToString.mapEntry;
+import static org.tweetwallfx.voxxed.RestCallHelper.cast;
 
-public class VProposal {
+public class VProposal implements Talk {
     private int id;
     private String title;
     private String description;
@@ -90,16 +96,6 @@ public class VProposal {
         this.title = title;
     }
 
-    public Talk talk() {
-        Talk talk = new Talk();
-        talk.setId(Integer.toString(id));
-        talk.setTitle(title);
-        talk.setSummaryAsHtml(description);
-        talk.setTrack(Optional.ofNullable(track).map(VTrack::toString).orElse(""));
-        talk.setSpeakers(speakers.stream().map(VSpeaker::speakerReference).toList());
-        return talk;
-    }
-
     @Override
     public String toString() {
         return createToString(this, mapOf(
@@ -115,5 +111,55 @@ public class VProposal {
                 mapEntry("tags", tags),
                 mapEntry("timeSlots", timeSlots)
         ), super.toString());
+    }
+
+    @Override
+    public String getId() {
+        return Integer.toString(id);
+    }
+
+    @Override
+    public String getName() {
+        return title;
+    }
+
+    @Override
+    public String getAudienceLevel() {
+        return audienceLevel;
+    }
+
+    @Override
+    public SessionType getSessionType() {
+        return sessionType;
+    }
+
+    @Override
+    public Locale getLanguage() {
+        return null;
+    }
+
+    @Override
+    public List<ScheduleSlot> getScheduleSlots() {
+        return cast(timeSlots, ScheduleSlot.class);
+    }
+
+    @Override
+    public List<Speaker> getSpeakers() {
+        return cast(speakers, Speaker.class);
+    }
+
+    @Override
+    public List<String> getTags() {
+        return tags.stream().map(VTag::toString).toList();
+    }
+
+    @Override
+    public Track getTrack() {
+        return track;
+    }
+
+    @Override
+    public Optional<Talk> reload() {
+        return Optional.of(this);
     }
 }

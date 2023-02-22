@@ -27,11 +27,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.tweetwallfx.devoxx.api.cfp.client.CFPClient;
-import org.tweetwallfx.devoxx.api.cfp.client.Rooms;
-import org.tweetwallfx.devoxx.api.cfp.client.Schedule;
-import org.tweetwallfx.devoxx.api.cfp.client.ScheduleSlot;
+import org.tweetwallfx.conference.api.ConferenceClient;
+import org.tweetwallfx.conference.api.Room;
+import org.tweetwallfx.conference.api.ScheduleSlot;
 
+import java.util.List;
 import java.time.Instant;
 import java.time.OffsetTime;
 import java.time.ZoneId;
@@ -43,22 +43,22 @@ class ScheduleTest {
     @Test
     void testReadEvents() {
         LOG.info("reading event..");
-        var client = CFPClient.getClient();
-        client.getRooms().ifPresent(ScheduleTest::rooms);
-        client.getSchedule("thursday").ifPresent(ScheduleTest::schedule);
+        var client = ConferenceClient.getClient();
+        rooms(client.getRooms());
+        schedule(client.getSchedule("thursday"));
     }
 
-    private static void rooms(Rooms rooms) {
+    private static void rooms(List<Room> rooms) {
         LOG.info("rooms: {}", rooms);
     }
 
-    private static void schedule(Schedule schedule) {
-        final ScheduleSlot slot = schedule.getSlots().get(0);
+    private static void schedule(List<ScheduleSlot> scheduleSlots) {
+        final ScheduleSlot slot = scheduleSlots.get(0);
 
         ZoneId zoneId = ZoneId.of("Europe/Zurich");
         OffsetTime now = OffsetTime.parse("09:00:00.0+02:00");
 
-        Instant instant = Instant.ofEpochMilli(slot.getToTimeMillis());
+        Instant instant = slot.getDateTimeRange().getStart();
         OffsetTime offsetTime = OffsetTime.ofInstant(instant, zoneId);
         boolean after = offsetTime.isAfter(now.plusMinutes(10));
         LOG.info("slot: {} {}", slot, after);

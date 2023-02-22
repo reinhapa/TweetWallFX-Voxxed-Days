@@ -7,7 +7,7 @@
         "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2023!",
         "stylesheetResource": "tweetwall.css"
     },
-    "voxxedDayCFP": {
+    "voxxedDayConferenceClient": {
         "eventUri": "https://vdz23.cfp.dev/api/public",
         "votingResultsUri": null
     },

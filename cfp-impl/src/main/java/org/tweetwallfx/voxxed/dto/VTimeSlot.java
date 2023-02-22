@@ -23,5 +23,42 @@
  */
 package org.tweetwallfx.voxxed.dto;
 
-public class VTimeSlot {
+import org.tweetwallfx.conference.api.DateTimeRange;
+import org.tweetwallfx.conference.api.Room;
+import org.tweetwallfx.conference.api.ScheduleSlot;
+import org.tweetwallfx.conference.api.Talk;
+
+import java.util.Optional;
+import java.util.OptionalInt;
+
+public class VTimeSlot implements ScheduleSlot {
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public DateTimeRange getDateTimeRange() {
+        return null;
+    }
+
+    @Override
+    public OptionalInt getFavoriteCount() {
+        return null;
+    }
+
+    @Override
+    public boolean isOverflow() {
+        return false;
+    }
+
+    @Override
+    public Room getRoom() {
+        return null;
+    }
+
+    @Override
+    public Optional<Talk> getTalk() {
+        return Optional.empty();
+    }
 }

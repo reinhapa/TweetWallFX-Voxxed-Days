@@ -25,11 +25,13 @@ package org.tweetwallfx.voxxed.dto;
 
 import java.net.URL;
 
+import org.tweetwallfx.conference.api.Track;
+
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapEntry;
 import static org.tweetwallfx.util.ToString.mapOf;
 
-public class VTrack {
+public class VTrack implements Track {
     private int id;
     private String name;
     private String description;
@@ -43,8 +45,14 @@ public class VTrack {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     public void setDescription(String description) {
@@ -63,5 +71,15 @@ public class VTrack {
                 mapEntry("description", description),
                 mapEntry("imageURL", imageURL)
         ), super.toString());
+    }
+
+    @Override
+    public String getAvatarURL() {
+        return imageURL.toString();
+    }
+
+    @Override
+    public String getId() {
+        return Integer.toString(id);
     }
 }

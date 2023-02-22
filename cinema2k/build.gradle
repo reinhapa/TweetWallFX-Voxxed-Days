@@ -32,8 +32,8 @@ mainClassName = 'org.tweetwallfx.vdz.Main'
 tasks.withType(JavaExec) {
     mainClass = mainClassName
     jvmArgs '-Dorg.tweetwallfx.scheduledata.day=thursday'
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
-//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
     jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
     jvmArgs '-Dprism.forceGPU=true'
@@ -58,10 +58,9 @@ dependencies {
     implementation project(':cfp-impl')
     implementation 'org.tweetwallfx:tweetwallfx-2d:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
+    implementation 'org.tweetwallfx:tweetwallfx-conference-stepengine:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-controls:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-core:' + versionTweetwallFX
-    implementation 'org.tweetwallfx:tweetwallfx-devoxx-api-cfp:' + versionTweetwallFX
-    implementation 'org.tweetwallfx:tweetwallfx-devoxx-cfp-stepengine:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-generic2d:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-stepengine-api:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-stepengine-dataproviders:' + versionTweetwallFX

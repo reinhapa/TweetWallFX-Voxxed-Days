@@ -25,6 +25,9 @@ package org.tweetwallfx.vdz.steps;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,9 +37,9 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tweetwallfx.conference.stepengine.dataprovider.ScheduleDataProvider;
+import org.tweetwallfx.conference.stepengine.dataprovider.SessionData;
 import org.tweetwallfx.controls.WordleSkin;
-import org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider;
-import org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.SessionData;
 import org.tweetwallfx.stepengine.api.DataProvider;
 import org.tweetwallfx.stepengine.api.Step;
 import org.tweetwallfx.stepengine.api.StepEngine.MachineContext;
@@ -55,8 +58,8 @@ import javafx.scene.text.Text;
  * Devox 2017 Show Schedule (Flip In) Animation Step
  */
 public class ShowSchedule extends FlipInTweets {
-
     private static final Logger LOGGER = LogManager.getLogger(ShowSchedule.class);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private ShowSchedule() {
         // prevent external instantiation
@@ -112,9 +115,9 @@ public class ShowSchedule extends FlipInTweets {
             Text speakers = (Text) session.lookup("#speakers");
             speakers.setText(sessionData.speakers.stream().collect(Collectors.joining(", ")));
             Label room = (Label) session.lookup("#room");
-            room.setText(sessionData.room);
+            room.setText(sessionData.room.getName());
             Label startTime = (Label) session.lookup("#startTime");
-            startTime.setText(sessionData.beginTime);
+            startTime.setText(FORMATTER.format(LocalDateTime.ofInstant(sessionData.beginTime, ZoneId.systemDefault())));
             return session;
         } catch (IOException ex) {
             LOGGER.error(ex);
