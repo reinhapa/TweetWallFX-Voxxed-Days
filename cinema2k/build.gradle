@@ -42,10 +42,6 @@ tasks.withType(JavaExec) {
     jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
     jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
     jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
-    jvmArgs '-Dmqtt.url=ssl://reinharts.dyndns.org:8883'
-    jvmArgs '-Dmqtt.username=tweetwall'
-    jvmArgs '-Dmqtt.password=Tw€€twall'
-//    jvmArgs '-Dmqtt.client.id=tweetwall-0'
 //    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:1044'
 }
 
@@ -56,6 +52,9 @@ task('debug', dependsOn: 'classes', type: JavaExec) {
 
 dependencies {
     implementation project(':cfp-impl')
+    implementation project(':mqtt')
+//    implementation 'org.openjfx:javafx-base:19.0.2.1:' + javaFxPlatform
+//    implementation 'org.openjfx:javafx-graphics:19.0.2.1:' + javaFxPlatform
     implementation 'org.tweetwallfx:tweetwallfx-2d:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-conference-stepengine:' + versionTweetwallFX
@@ -70,4 +69,5 @@ dependencies {
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-twitter4j:' + versionTweetwallFX
     implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'
 }

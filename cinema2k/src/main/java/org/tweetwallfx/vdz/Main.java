@@ -23,29 +23,7 @@
  */
 package org.tweetwallfx.vdz;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.tweetwallfx.config.Configuration;
-import org.tweetwallfx.config.TweetwallSettings;
-import org.tweetwallfx.tweet.api.Tweeter;
-import org.tweetwallfx.twod.TagTweets;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -54,30 +32,52 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tweetwallfx.config.Configuration;
+import org.tweetwallfx.config.TweetwallSettings;
+import org.tweetwallfx.mqtt.MqttEvent;
+import org.tweetwallfx.mqtt.MqttProcess;
+import org.tweetwallfx.tweet.api.Tweeter;
+import org.tweetwallfx.twod.TagTweets;
+
+import static org.tweetwallfx.mqtt.MqttEvent.RESTART;
+import static org.tweetwallfx.mqtt.MqttEvent.STOP;
 
 public class Main extends Application {
-    private static final Logger LOG = LogManager.getLogger(Main.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    private final AtomicReference<Integer> exitCode = new AtomicReference<>();
+    final MqttProcess mqttProcess = new MqttProcess();
 
     @Override
     public void start(Stage primaryStage) {
-        LOG.info("starting...");
-        new Thread(this::mqttLoop).start();
+        new Thread(mqttProcess).start();
+        mqttProcess.addMqttEventHandler(e ->  {
+            if (STOP.equals(e.getEventType())) {
+                Platform.exit();
+            } else if (RESTART.equals(e.getEventType())) {
+                LOG.warn("Ignoring restart command");
+            }
+        });
 
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 1920, 1080);
         borderPane.getStyleClass().add("splash");
 
-        final TweetwallSettings tweetwallSettings = Configuration.getInstance()
-                .getConfigTyped(TweetwallSettings.CONFIG_KEY, TweetwallSettings.class);
+        final TweetwallSettings tweetwallSettings
+                = Configuration.getInstance().getConfigTyped(TweetwallSettings.CONFIG_KEY, TweetwallSettings.class);
 
         Optional.ofNullable(tweetwallSettings.stylesheetResource())
-                .map(ClassLoader.getSystemClassLoader()::getResource).map(java.net.URL::toExternalForm)
+                .map(ClassLoader.getSystemClassLoader()::getResource)
+                .map(java.net.URL::toExternalForm)
                 .ifPresent(scene.getStylesheets()::add);
-        Optional.ofNullable(tweetwallSettings.stylesheetFile()).ifPresent(scene.getStylesheets()::add);
+        Optional.ofNullable(tweetwallSettings.stylesheetFile())
+                .ifPresent(scene.getStylesheets()::add);
 
-        StringPropertyAppender spa = new StringPropertyAppender();
+        final StringPropertyAppender spa = new StringPropertyAppender();
         spa.start();
 
         HBox statusLineHost = new HBox();
@@ -94,7 +94,7 @@ public class Main extends Application {
                 switch (event.getCharacter()) {
                     case "d" -> toggleStatusLine(borderPane, spa, statusLineHost);
                     case "f" -> primaryStage.setFullScreen(!primaryStage.isFullScreen());
-                    case "x" -> exitCode.set(Integer.valueOf(0));
+                    case "x" -> Platform.exit();
                     default -> {}
                 };
             }
@@ -122,74 +122,8 @@ public class Main extends Application {
     public void stop() {
         LOG.info("closing...");
         Tweeter.getInstance().shutdown();
-    }
-
-    void mqttLoop() {
-        Properties systemProperties = System.getProperties();
-        for (;;) {
-            String broker = systemProperties.getProperty("mqtt.url", "tcp://127.0.0.1:1883");
-            String clientId = systemProperties.getProperty("mqtt.client.id", UUID.randomUUID().toString());
-            try (MqttClientPersistence persistence = new MemoryPersistence();
-                    MqttClient sampleClient = new MqttClient(broker, clientId, persistence)) {
-                MqttConnectOptions connOpts = new MqttConnectOptions();
-                connOpts.setCleanSession(true);
-                connOpts.setConnectionTimeout(0);
-                connOpts.setKeepAliveInterval(30);
-                connOpts.setAutomaticReconnect(true);
-                Optional.ofNullable(systemProperties.getProperty("mqtt.username")).ifPresent(connOpts::setUserName);
-                Optional.ofNullable(systemProperties.getProperty("mqtt.password"))
-                        .ifPresent(pw -> connOpts.setPassword(pw.toCharArray()));
-
-                LOG.info("Connect to {}", broker);
-                sampleClient.connect(connOpts);
-                LOG.info("Connection established");
-
-                sampleClient.subscribe("tweetwall/action/#", (t, m) -> handleMqttMessage(clientId, t, m));
-                for (;;) {
-                    sampleClient.publish("tweetwall/state/" + clientId, message("alive"));
-                    Integer rc = exitCode.getAndSet(null);
-                    if (rc != null) {
-                        sampleClient.publish("tweetwall/state/" + clientId, message("stopping"));
-                        LOG.warn("Going to exit with rc {}", rc);
-                        sampleClient.disconnect();
-                        Platform.exit();
-                        return;
-                    }
-                    TimeUnit.MILLISECONDS.sleep(500);
-                }
-            } catch (MqttException e) {
-                LOG.error("Failure while handling MQTT", e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                LOG.error("Interrupted while waiting", e);
-                return;
-            }
-        }
-    }
-
-    static MqttMessage message(String messageContent) {
-        MqttMessage message = new MqttMessage(messageContent.getBytes(StandardCharsets.UTF_8));
-        message.setQos(2);
-        return message;
-    }
-
-    void handleMqttMessage(String clientId, String topic, MqttMessage message) {
-        String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
-        if (topic.equals("tweetwall/action/" + clientId)) {
-            switch (payload) {
-            case "stop": {
-                exitCode.set(Integer.valueOf(0));
-                break;
-            }
-            case "restart": {
-                exitCode.set(Integer.valueOf(42));
-                break;
-            }
-            default:
-            }
-        } else {
-            LOG.warn("Unkown payload '{}' for topic {}", payload, topic);
-        }
+        mqttProcess.stop();
+        System.exit(0);
     }
 
     /**

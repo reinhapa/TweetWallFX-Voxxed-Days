@@ -1,7 +1,7 @@
 /*
- * The MIT License
+ * The MIT License (MIT)
  *
- * Copyright 2022-2023 TweetWallFX
+ * Copyright (c) 2023 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.tweetwallfx.mqtt;
 
-rootProject.name='tweetwallfx-voxxed-days'
+import javafx.event.Event;
+import javafx.event.EventType;
 
-include ':cfp-impl'
-include ':cinema2k'
-include ':mqtt'
+public class MqttEvent extends Event {
+    public static final EventType<MqttEvent> ANY = new EventType<>(Event.ANY, "ANY");
+    public static final EventType<MqttEvent> RESTART = new EventType<>(Event.ANY, "RESTART");
+    public static final EventType<MqttEvent> STOP = new EventType<>(Event.ANY, "STOP");
 
-def tweetwallFxProject = new File(rootDir, '../TweetWallFX')
-if (tweetwallFxProject.isDirectory()) {
-    includeBuild tweetwallFxProject
+    public MqttEvent(Object source, EventType<? extends Event> eventType) {
+        super(source, null, eventType);
+    }
 }
