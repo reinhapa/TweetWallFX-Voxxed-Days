@@ -81,7 +81,7 @@ public class MqttProcess implements Runnable {
                 final String broker = mqttSettings.brokerUrl();
                 final String clientId = mqttSettings.clientId();
                 try (MqttClientPersistence persistence = new MemoryPersistence();
-                     MqttClient sampleClient = new MqttClient(broker, clientId, persistence)) {
+                     MqttClient mqttClient = new MqttClient(broker, clientId, persistence)) {
                     MqttConnectOptions connOpts = new MqttConnectOptions();
                     connOpts.setCleanSession(true);
                     connOpts.setConnectionTimeout(0);
@@ -91,13 +91,13 @@ public class MqttProcess implements Runnable {
                     Optional.ofNullable(auth.userName()).ifPresent(connOpts::setUserName);
                     Optional.ofNullable(auth.secret()).ifPresent(pw -> connOpts.setPassword(pw.toCharArray()));
                     LOG.info("Connect to {}", broker);
-                    sampleClient.connect(connOpts);
+                    mqttClient.connect(connOpts);
                     stopProperty.addListener((observableValue, oldValue, newValue) -> {
                         if (newValue) {
                             try {
-                                sampleClient.publish("tweetwall/state/" + clientId, message("stopping"));
+                                mqttClient.publish("tweetwall/state/" + clientId, message("stopping"));
                                 LOG.info("Disconnecting");
-                                sampleClient.disconnect();
+                                mqttClient.disconnect();
                             } catch (MqttException e) {
                                 LOG.error("Failed to send stop notification", e);
                             }
@@ -105,9 +105,9 @@ public class MqttProcess implements Runnable {
                     });
                     runningProperty.set(true);
                     LOG.info("Connection established");
-                    sampleClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
+                    mqttClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
                     while (!stopProperty.get()) {
-                        sampleClient.publish("tweetwall/state/" + clientId, message("alive"));
+                        mqttClient.publish("tweetwall/state/" + clientId, message("alive"));
                         wait500ms();
                     }
                 } catch (MqttException e) {

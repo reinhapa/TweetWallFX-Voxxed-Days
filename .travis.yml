@@ -1,7 +1,0 @@
-language: java
-jdk:
-  - openjdk11
-#addons:
-#  apt:
-#    packages:
-#      - oracle-java8-installer
