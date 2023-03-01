@@ -67,11 +67,15 @@ public record MqttSettings(
         this.debugEnabled = valueOrDefault(debugEnabled, false);
         this.brokerUrl = valueOrDefault(brokerUrl, "tcp://127.0.0.1:1883");
         this.clientId = valueOrDefault(clientId, UUID.randomUUID().toString());
-        this.heartbeatSeconds = valueOrDefault(heartbeatSeconds, Integer.valueOf(5));
-        if (heartbeatSeconds.intValue() < 1 ) {
+        this.heartbeatSeconds = checkValue(valueOrDefault(heartbeatSeconds, Integer.valueOf(5)));
+        this.auth = auth;
+    }
+
+    private Integer checkValue(Integer checkedValue) {
+        if (checkedValue.intValue() < 1 ) {
             throw new IllegalArgumentException("heartbeatSeconds must be a positive value");
         }
-        this.auth = auth;
+        return checkedValue;
     }
 
     /**
