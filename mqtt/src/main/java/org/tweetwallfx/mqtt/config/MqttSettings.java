@@ -45,6 +45,9 @@ import static org.tweetwallfx.util.Nullable.valueOrDefault;
  * the extended mode
  *
  * <p>
+ * Param {@code heartbeatSeconds} the MQTT heart beat delay time in seconds
+ *
+ * <p>
  * Param {@code auth} the Auth setting the MQTT client is to use in order
  * to connect with the broker
  */
@@ -52,16 +55,22 @@ public record MqttSettings(
         Boolean debugEnabled,
         String brokerUrl,
         String clientId,
+        Integer heartbeatSeconds,
         Auth auth) {
 
     public MqttSettings(
             final Boolean debugEnabled,
             final String brokerUrl,
             final String clientId,
+            Integer heartbeatSeconds,
             final Auth auth) {
         this.debugEnabled = valueOrDefault(debugEnabled, false);
         this.brokerUrl = valueOrDefault(brokerUrl, "tcp://127.0.0.1:1883");
         this.clientId = valueOrDefault(clientId, UUID.randomUUID().toString());
+        this.heartbeatSeconds = valueOrDefault(heartbeatSeconds, Integer.valueOf(5));
+        if (heartbeatSeconds.intValue() < 1 ) {
+            throw new IllegalArgumentException("heartbeatSeconds must be a positive value");
+        }
         this.auth = auth;
     }
 

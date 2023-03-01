@@ -67,7 +67,7 @@ public class MqttProcess implements Runnable {
     public void stop() {
         stopProperty.set(true);
         while (runningProperty.get()) {
-            wait500ms();
+            waitFor(TimeUnit.MILLISECONDS, 500);
         }
     }
 
@@ -108,7 +108,7 @@ public class MqttProcess implements Runnable {
                     mqttClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
                     while (!stopProperty.get()) {
                         mqttClient.publish("tweetwall/state/" + clientId, message("alive"));
-                        wait500ms();
+                        waitFor(TimeUnit.SECONDS, mqttSettings.heartbeatSeconds());
                     }
                 } catch (MqttException e) {
                     LOG.error("Failure while handling MQTT", e);
@@ -119,9 +119,9 @@ public class MqttProcess implements Runnable {
         }
     }
 
-    private static void wait500ms() {
+    private static void waitFor(TimeUnit unit, long amount) {
         try {
-            TimeUnit.MILLISECONDS.sleep(500);
+            unit.sleep(amount);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             LOG.error("Interrupted while waiting", e);

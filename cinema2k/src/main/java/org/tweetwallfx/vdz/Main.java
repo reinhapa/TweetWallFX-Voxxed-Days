@@ -49,6 +49,7 @@ import static org.tweetwallfx.mqtt.MqttEvent.STOP;
 
 public class Main extends Application {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final ThreadLocal<Integer> RC = ThreadLocal.withInitial(() -> Integer.valueOf(0));
 
     final MqttProcess mqttProcess = new MqttProcess();
 
@@ -123,7 +124,6 @@ public class Main extends Application {
         LOG.info("closing...");
         Tweeter.getInstance().shutdown();
         mqttProcess.stop();
-        System.exit(0);
     }
 
     /**
@@ -133,5 +133,8 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        final int rc = RC.get().intValue();
+        RC.remove();
+        System.exit(rc);
     }
 }
