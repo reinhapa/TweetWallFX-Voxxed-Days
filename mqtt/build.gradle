@@ -24,7 +24,7 @@
 
 dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-//    implementation 'org.openjfx:javafx-base:19.0.2.1:' + javaFxPlatform
+//    implementation 'org.openjfx:javafx-base:20-ea+11:' + javaFxPlatform
     implementation 'org.slf4j:slf4j-api:2.0.6'
     implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
 }
