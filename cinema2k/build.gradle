@@ -31,21 +31,44 @@ mainClassName = 'org.tweetwallfx.vdz.Main'
 
 tasks.withType(JavaExec) {
     mainClass = mainClassName
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.day=thursday'
-//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
-    jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
-//    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
     jvmArgs '-Dprism.forceGPU=true'
     jvmArgs '-Dprism.verbose=true'
-//    jvmArgs '-Dglass.platform=gtk'
     jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
     jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
     jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"
-//    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:1044'
 }
 
-task('debug', dependsOn: 'classes', type: JavaExec) {
+tasks.register('runFixed', JavaExec) {
+    dependsOn classes
+    classpath sourceSets.main.runtimeClasspath
+    jvmArgs '-Dglass.platform=gtk'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.day=thursday'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
+    jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
+}
+
+tasks.register('runGtk', JavaExec) {
+    dependsOn classes
+    classpath sourceSets.main.runtimeClasspath
+    jvmArgs '-Dglass.platform=Monocle'
+    jvmArgs '-Dembedded=monocle'
+    jvmArgs '-Dmonocle.platform=EGL'
+    jvmArgs '-Dmonocle.egl.lib=/opt/javafx-sdk-21/lib/libgluon_drm-1.1.7.so'
+    jvmArgs '-Duse.egl=true'
+    jvmArgs '-Degl.displayid=/dev/dri/card1'
+    jvmArgs '-Djava.library.path=/opt/javafx-sdk-21/lib'
+}
+
+tasks.register('runEgl', JavaExec) {
+    dependsOn classes
+    classpath sourceSets.main.runtimeClasspath
+    jvmArgs '-Dglass.platform=gtk'
+}
+
+tasks.register('debug', JavaExec) {
+    dependsOn classes
     classpath sourceSets.main.runtimeClasspath
     debug = true
 }
@@ -67,6 +90,7 @@ dependencies {
     implementation 'org.tweetwallfx:tweetwallfx-transitions:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-tweet-api:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-twitter4j:' + versionTweetwallFX
+    implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-mastodon4j:' + versionTweetwallFX
     implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'

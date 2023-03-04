@@ -266,5 +266,3 @@ task createFolders(description: 'Creates the folders for the projects and source
         }
     }
 }
-
-task vdz dependsOn ':cinema2k:run'
