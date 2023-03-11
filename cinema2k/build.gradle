@@ -68,9 +68,11 @@ tasks.register('runEgl', JavaExec) {
 }
 
 tasks.register('debug', JavaExec) {
-    dependsOn classes
     classpath sourceSets.main.runtimeClasspath
+    dependsOn classes
     debug = true
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
+    jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 }
 
 dependencies {
