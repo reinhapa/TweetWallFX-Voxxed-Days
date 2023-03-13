@@ -10,13 +10,20 @@ if [ ! -d $JAVA_FX ]; then
   exit
 fi
 
-#export FX_OPTS="-Degl.displayid=/dev/dri/card1 -Dmonocle.egl.lib=$JAVA_FX/libgluon_drm-1.1.7.so -Djava.library.path=$JAVA_FX -Dmonocle.platform=EGL"
-export FX_OPTS="-Dglass.platform=gtk"
+export FX_OPTS="-Dprism.forceGPU=true -Dprism.verbose=true -Dcom.sun.javafx.transparentFramebuffer=true -Degl.displayid=/dev/dri/card1 -Dmonocle.egl.lib=$JAVA_FX/libgluon_drm-1.1.7.so -Djava.library.path=$JAVA_FX -Dmonocle.platform=EGL"
+#export FX_OPTS="-Dglass.platform=gtk"
 
 export JAVA_OPTS="--enable-preview --module-path .:$JAVA_FX --add-modules javafx.controls,javafx.fxml,javafx.graphics $FX_OPTS -Dlog.fileName=$HOME/tweetwall.log -Dlog4j.configurationFile=file:///$HOME/log4j2.xml"
-export CINEMA2K_OPTS="-Dorg.tweetwallfx.disable-full-screen=true -Dorg.tweetwallfx.scheduledata.day=thursday -Dorg.tweetwallfx.scheduledata.time=10:00Z"
+#export CINEMA2K_OPTS="-Dorg.tweetwallfx.disable-full-screen=true -Dorg.tweetwallfx.scheduledata.day=thursday -Dorg.tweetwallfx.scheduledata.time=10:00Z"
 
 export ENABLE_GLUON_COMMERCIAL_EXTENSIONS=true
 #/sbin/init 3
-./cinema2k/build/install/cinema2k/bin/cinema2k
+while true; do
+  ./cinema2k/build/install/cinema2k/bin/cinema2k
+  EC=$?
+  if [ $EC -eq 0 ]; then
+    echo "Normal exit"
+    break
+  fi
+done
 #/sbin/init 5

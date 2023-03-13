@@ -23,6 +23,8 @@
  */
 package org.tweetwallfx.mqtt;
 
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -95,7 +97,7 @@ public class MqttProcess implements Runnable {
                     stopProperty.addListener((observableValue, oldValue, newValue) -> {
                         if (newValue) {
                             try {
-                                mqttClient.publish("tweetwall/state/" + clientId, message("stopping"));
+                                mqttClient.publish("tweetwall/state/" + clientId, message(State.stopping()));
                                 LOG.info("Disconnecting");
                                 mqttClient.disconnect();
                             } catch (MqttException e) {
@@ -107,7 +109,7 @@ public class MqttProcess implements Runnable {
                     LOG.info("Connection established");
                     mqttClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
                     while (!stopProperty.get()) {
-                        mqttClient.publish("tweetwall/state/" + clientId, message("alive"));
+                        mqttClient.publish("tweetwall/state/" + clientId, message(State.alive()));
                         waitFor(TimeUnit.SECONDS, mqttSettings.heartbeatSeconds());
                     }
                 } catch (MqttException e) {
@@ -128,22 +130,26 @@ public class MqttProcess implements Runnable {
         }
     }
 
-    static MqttMessage message(String messageContent) {
-        MqttMessage message = new MqttMessage(messageContent.getBytes(StandardCharsets.UTF_8));
-        message.setQos(2);
-        return message;
+    static MqttMessage message(Object messageObject) throws MqttException {
+        try (Jsonb jsonb = JsonbBuilder.create()) {
+            MqttMessage message = new MqttMessage(jsonb.toJson(messageObject).getBytes(StandardCharsets.UTF_8));
+            message.setQos(2);
+            return message;
+        } catch (Exception e) {
+            throw new MqttException(e);
+        }
     }
 
     void handleActionMessage(String clientId, String topic, MqttMessage message) {
         String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
         if (topic.equals("tweetwall/action/" + clientId)) {
             switch (payload) {
-                case "stop"-> fire(new MqttEvent(this, MqttEvent.STOP));
+                case "stop" -> fire(new MqttEvent(this, MqttEvent.STOP));
                 case "restart" -> fire(new MqttEvent(this, MqttEvent.RESTART));
-                default -> LOG.warn("Unkown payload: {}", payload);
-            };
+                default -> LOG.warn("Unknown action payload: {}", payload);
+            }
         } else {
-            LOG.warn("Unkown payload '{}' for topic {}", payload, topic);
+            LOG.warn("Unknown payload '{}' for topic {}", payload, topic);
         }
     }
 }

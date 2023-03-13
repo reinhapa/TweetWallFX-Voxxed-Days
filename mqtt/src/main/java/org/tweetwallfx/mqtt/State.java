@@ -1,7 +1,7 @@
 /*
- * The MIT License
+ * The MIT License (MIT)
  *
- * Copyright 2023-2023 TweetWallFX
+ * Copyright (c) 2023 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.tweetwallfx.mqtt;
 
-dependencies {
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-//    implementation 'org.openjfx:javafx-base:20-ea+11:' + javaFxPlatform
-    implementation 'org.eclipse:yasson:3.0.2'
-    implementation 'org.slf4j:slf4j-api:2.0.6'
-    implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
+import java.time.ZonedDateTime;
+
+import static java.time.Clock.systemUTC;
+
+public record State(String name, ZonedDateTime zonedDateTime) {
+    static State stopping() {
+        return new State("stopping", ZonedDateTime.now(systemUTC()));
+    }
+
+    static State alive() {
+        return new State("alive", ZonedDateTime.now(systemUTC()));
+    }
 }

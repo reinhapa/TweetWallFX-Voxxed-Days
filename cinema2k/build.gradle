@@ -32,7 +32,7 @@ mainClassName = 'org.tweetwallfx.vdz.Main'
 tasks.withType(JavaExec) {
     mainClass = mainClassName
     jvmArgs '-Dprism.forceGPU=true'
-    jvmArgs '-Dprism.verbose=true'
+    jvmArgs '-Dprism.forceGPU=true'
     jvmArgs '-Dcom.sun.javafx.transparentFramebuffer=true'
     jvmArgs "-Dlog.fileName=${System.properties['user.home']}/tweetwall.log"
     jvmArgs "-Dlog4j.configurationFile=file:///${System.properties['user.home']}/log4j2.xml"

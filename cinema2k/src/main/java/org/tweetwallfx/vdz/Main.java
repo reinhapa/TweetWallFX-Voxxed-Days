@@ -24,6 +24,8 @@
 package org.tweetwallfx.vdz;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -49,7 +51,7 @@ import static org.tweetwallfx.mqtt.MqttEvent.STOP;
 
 public class Main extends Application {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-    private static final ThreadLocal<Integer> RC = ThreadLocal.withInitial(() -> Integer.valueOf(0));
+    private static final AtomicInteger RC = new AtomicInteger();
 
     final MqttProcess mqttProcess = new MqttProcess();
 
@@ -58,9 +60,9 @@ public class Main extends Application {
         new Thread(mqttProcess).start();
         mqttProcess.addMqttEventHandler(e ->  {
             if (STOP.equals(e.getEventType())) {
-                Platform.exit();
+                exitApplication(0);  // normal exit
             } else if (RESTART.equals(e.getEventType())) {
-                LOG.warn("Ignoring restart command");
+                exitApplication(42); // restart
             }
         });
 
@@ -96,7 +98,8 @@ public class Main extends Application {
                 switch (character) {
                     case "D" -> toggleStatusLine(borderPane, spa, statusLineHost);
                     case "F" -> primaryStage.setFullScreen(!primaryStage.isFullScreen());
-                    case "X", "Q" -> Platform.exit();
+                    case "R" -> exitApplication(42); // restart
+                    case "X", "Q" -> exitApplication(0); // normal exit
                     default -> LOG.warn("Unknown character: '{}'", character);
                 };
             }
@@ -107,6 +110,12 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.setFullScreen(!Boolean.getBoolean("org.tweetwallfx.disable-full-screen"));
+    }
+
+    private void exitApplication(int exitCode) {
+        LOG.info("Exit application with rc={}", exitCode);
+        RC.set(exitCode);
+        Platform.exit();
     }
 
     private static void toggleStatusLine(BorderPane borderPane, StringPropertyAppender spa, HBox statusLineHost) {
@@ -134,8 +143,6 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        final int rc = RC.get().intValue();
-        RC.remove();
-        System.exit(rc);
+        System.exit(RC.get());
     }
 }
