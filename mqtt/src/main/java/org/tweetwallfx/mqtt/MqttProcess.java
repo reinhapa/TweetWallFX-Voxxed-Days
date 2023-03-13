@@ -47,6 +47,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 public class MqttProcess implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(MqttProcess.class);
 
@@ -69,7 +71,7 @@ public class MqttProcess implements Runnable {
     public void stop() {
         stopProperty.set(true);
         while (runningProperty.get()) {
-            waitFor(TimeUnit.MILLISECONDS, 500);
+            waitFor(MILLISECONDS, 500);
         }
     }
 
@@ -79,6 +81,7 @@ public class MqttProcess implements Runnable {
             Thread.currentThread().setName("MQTT-Command-Dispatcher");
             final MqttSettings mqttSettings = Configuration.getInstance()
                     .getConfigTyped(MqttSettings.CONFIG_KEY, MqttSettings.class);
+            long lastHeartbeat = 0;
             while (!stopProperty.get()) {
                 final String broker = mqttSettings.brokerUrl();
                 final String clientId = mqttSettings.clientId();
@@ -109,8 +112,16 @@ public class MqttProcess implements Runnable {
                     LOG.info("Connection established");
                     mqttClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
                     while (!stopProperty.get()) {
-                        mqttClient.publish("tweetwall/state/" + clientId, message(State.alive()));
-                        waitFor(TimeUnit.SECONDS, mqttSettings.heartbeatSeconds());
+                        // heart beat task
+                        long currentTime = System.currentTimeMillis();
+                        long duration = MILLISECONDS.toSeconds(currentTime - lastHeartbeat);
+                        if (duration >= mqttSettings.heartbeatSeconds()) {
+                            lastHeartbeat = currentTime;
+                            LOG.debug("Sending heart beat message");
+                            mqttClient.publish("tweetwall/state/" + clientId, message(State.alive()));
+                        } else {
+                            waitFor(MILLISECONDS, 500);
+                        }
                     }
                 } catch (MqttException e) {
                     LOG.error("Failure while handling MQTT", e);
