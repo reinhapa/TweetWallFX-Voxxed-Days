@@ -27,12 +27,20 @@ import java.time.ZonedDateTime;
 
 import static java.time.Clock.systemUTC;
 
-public record State(String name, ZonedDateTime zonedDateTime) {
+public record State(String name, ZonedDateTime zonedDateTime, Object payload) {
     static State stopping() {
-        return new State("stopping", ZonedDateTime.now(systemUTC()));
+        return new State("stopping", getNow(), null);
+    }
+
+    static State starting(Object payload) {
+        return new State("starting", getNow(), payload);
     }
 
     static State alive() {
-        return new State("alive", ZonedDateTime.now(systemUTC()));
+        return new State("alive", getNow(), null);
+    }
+
+    private static ZonedDateTime getNow() {
+        return ZonedDateTime.now(systemUTC());
     }
 }

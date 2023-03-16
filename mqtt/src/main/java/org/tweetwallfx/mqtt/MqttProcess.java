@@ -109,6 +109,7 @@ public class MqttProcess implements Runnable {
                         }
                     });
                     runningProperty.set(true);
+                    mqttClient.publish("tweetwall/state/" + clientId, message(State.starting(SystemInfo.info())));
                     LOG.info("Connection established");
                     mqttClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
                     while (!stopProperty.get()) {
