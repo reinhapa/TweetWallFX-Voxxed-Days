@@ -40,6 +40,10 @@ public record State(String name, ZonedDateTime zonedDateTime, Object payload) {
         return new State("alive", getNow(), null);
     }
 
+    static State info(Object payload) {
+        return new State("info", getNow(), payload);
+    }
+
     private static ZonedDateTime getNow() {
         return ZonedDateTime.now(systemUTC());
     }

@@ -46,15 +46,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class MqttProcess implements Runnable {
+    private static final String TWEETWALL_STATE = "tweetwall/state/";
     private static final Logger LOG = LoggerFactory.getLogger(MqttProcess.class);
 
     private final BooleanProperty stopProperty = new SimpleBooleanProperty();
     private final BooleanProperty runningProperty = new SimpleBooleanProperty();
     private final List<EventHandler<MqttEvent>> handlers = new ArrayList<>();
+    private final AtomicReference<MqttClient> clientRef = new AtomicReference<>();
 
     private void fire(MqttEvent mqttEvent) {
         handlers.forEach(h -> h.handle(mqttEvent));
@@ -87,6 +90,7 @@ public class MqttProcess implements Runnable {
                 final String clientId = mqttSettings.clientId();
                 try (MqttClientPersistence persistence = new MemoryPersistence();
                      MqttClient mqttClient = new MqttClient(broker, clientId, persistence)) {
+                    clientRef.set(mqttClient);
                     MqttConnectOptions connOpts = new MqttConnectOptions();
                     connOpts.setCleanSession(true);
                     connOpts.setConnectionTimeout(0);
@@ -99,8 +103,8 @@ public class MqttProcess implements Runnable {
                     mqttClient.connect(connOpts);
                     stopProperty.addListener((observableValue, oldValue, newValue) -> {
                         if (newValue) {
+                            sendMessage(TWEETWALL_STATE, State.stopping());
                             try {
-                                mqttClient.publish("tweetwall/state/" + clientId, message(State.stopping()));
                                 LOG.info("Disconnecting");
                                 mqttClient.disconnect();
                             } catch (MqttException e) {
@@ -109,7 +113,7 @@ public class MqttProcess implements Runnable {
                         }
                     });
                     runningProperty.set(true);
-                    mqttClient.publish("tweetwall/state/" + clientId, message(State.starting(SystemInfo.info())));
+                    sendMessage(TWEETWALL_STATE, State.starting(SystemInfo.info()));
                     LOG.info("Connection established");
                     mqttClient.subscribe("tweetwall/action/#", (t, m) -> handleActionMessage(clientId, t, m));
                     while (!stopProperty.get()) {
@@ -119,13 +123,15 @@ public class MqttProcess implements Runnable {
                         if (duration >= mqttSettings.heartbeatSeconds()) {
                             lastHeartbeat = currentTime;
                             LOG.debug("Sending heart beat message");
-                            mqttClient.publish("tweetwall/state/" + clientId, message(State.alive()));
+                            sendMessage(TWEETWALL_STATE, State.alive());
                         } else {
                             waitFor(MILLISECONDS, 500);
                         }
                     }
                 } catch (MqttException e) {
                     LOG.error("Failure while handling MQTT", e);
+                } finally {
+                    clientRef.set(null);
                 }
             }
         } finally {
@@ -142,26 +148,31 @@ public class MqttProcess implements Runnable {
         }
     }
 
-    static MqttMessage message(Object messageObject) throws MqttException {
-        try (Jsonb jsonb = JsonbBuilder.create()) {
-            MqttMessage message = new MqttMessage(jsonb.toJson(messageObject).getBytes(StandardCharsets.UTF_8));
-            message.setQos(2);
-            return message;
-        } catch (Exception e) {
-            throw new MqttException(e);
-        }
-    }
-
-    void handleActionMessage(String clientId, String topic, MqttMessage message) {
+    private void handleActionMessage(String clientId, String topic, MqttMessage message) {
         String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
         if (topic.equals("tweetwall/action/" + clientId)) {
             switch (payload) {
                 case "stop" -> fire(new MqttEvent(this, MqttEvent.STOP));
                 case "restart" -> fire(new MqttEvent(this, MqttEvent.RESTART));
+                case "info" -> sendMessage(TWEETWALL_STATE, State.info(SystemInfo.info()));
                 default -> LOG.warn("Unknown action payload: {}", payload);
             }
         } else {
             LOG.warn("Unknown payload '{}' for topic {}", payload, topic);
+        }
+    }
+
+    private void sendMessage(String topic, Object messageObject) {
+        final MqttClient mqttClient = clientRef.get();
+        if (mqttClient == null) {
+            LOG.error("Failed to send '{}' for topic {} as no client available", messageObject, topic);
+        } else {
+            try (Jsonb jsonb = JsonbBuilder.create()) {
+                final byte[] payload = jsonb.toJson(messageObject).getBytes(StandardCharsets.UTF_8);
+                mqttClient.publish(topic + mqttClient.getClientId(), payload, 2, false);
+            } catch (Exception e) {
+                LOG.error("Failed to send '{}' for topic {}", messageObject, topic, e);
+            }
         }
     }
 }
