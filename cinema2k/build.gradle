@@ -41,15 +41,14 @@ tasks.withType(JavaExec) {
 tasks.register('runFixed', JavaExec) {
     dependsOn classes
     classpath sourceSets.main.runtimeClasspath
-    jvmArgs '-Dglass.platform=gtk'
     jvmArgs '-Dorg.tweetwallfx.scheduledata.day=thursday'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
-//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
     jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 }
 
-tasks.register('runGtk', JavaExec) {
+tasks.register('runEgl', JavaExec) {
     dependsOn classes
     classpath sourceSets.main.runtimeClasspath
     jvmArgs '-Dglass.platform=Monocle'
@@ -61,7 +60,7 @@ tasks.register('runGtk', JavaExec) {
     jvmArgs '-Djava.library.path=/opt/javafx-sdk-21/lib'
 }
 
-tasks.register('runEgl', JavaExec) {
+tasks.register('runGtk', JavaExec) {
     dependsOn classes
     classpath sourceSets.main.runtimeClasspath
     jvmArgs '-Dglass.platform=gtk'
@@ -71,7 +70,7 @@ tasks.register('debug', JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     dependsOn classes
     debug = true
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
+//    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
     jvmArgs '-Dorg.tweetwallfx.disable-full-screen=true'
 }
 

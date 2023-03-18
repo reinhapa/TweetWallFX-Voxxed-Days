@@ -31,11 +31,12 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SystemInfo {
     private static final Logger LOG = LoggerFactory.getLogger(SystemInfo.class);
 
-    public static Object info() {
+    public static Map<String, List<String>> info() {
         try {
             var infos = new HashMap<String, List<String>>();
             var interfaces = NetworkInterface.getNetworkInterfaces();
@@ -54,7 +55,7 @@ public class SystemInfo {
             }
             return infos;
         } catch (SocketException e) {
-            LOG.error("Failedd to get system info", e);
+            LOG.error("Failed to get system info", e);
         }
         return null;
     }
