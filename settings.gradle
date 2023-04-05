@@ -26,7 +26,6 @@ rootProject.name='tweetwallfx-voxxed-days'
 
 include ':cfp-impl'
 include ':cinema2k'
-include ':mqtt'
 
 def tweetwallFxProject = new File(rootDir, '../TweetWallFX')
 if (tweetwallFxProject.isDirectory()) {

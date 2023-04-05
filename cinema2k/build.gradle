@@ -76,7 +76,6 @@ tasks.register('debug', JavaExec) {
 
 dependencies {
     implementation project(':cfp-impl')
-    implementation project(':mqtt')
 //    implementation 'org.openjfx:javafx-base:20-ea+11:' + javaFxPlatform
 //    implementation 'org.openjfx:javafx-graphics:20-ea+11:' + javaFxPlatform
     implementation 'org.tweetwallfx:tweetwallfx-2d:' + versionTweetwallFX
@@ -85,6 +84,7 @@ dependencies {
     implementation 'org.tweetwallfx:tweetwallfx-controls:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-core:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-generic2d:' + versionTweetwallFX
+    implementation 'org.tweetwallfx:tweetwallfx-mqtt:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-stepengine-api:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-stepengine-dataproviders:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-stepengine-steps:' + versionTweetwallFX
