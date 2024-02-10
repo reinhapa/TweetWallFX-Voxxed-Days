@@ -24,6 +24,8 @@
 package org.tweetwallfx.voxxed;
 
 import jakarta.ws.rs.core.GenericType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tweetwallfx.conference.api.ConferenceClient;
 import org.tweetwallfx.conference.api.RatingClient;
 import org.tweetwallfx.conference.api.Room;
@@ -42,11 +44,13 @@ import org.tweetwallfx.voxxed.dto.VTrack;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.tweetwallfx.voxxed.RestCallHelper.cast;
 import static org.tweetwallfx.voxxed.RestCallHelper.readOptionalFrom;
 
 public class VoxxedDayConferenceClient implements ConferenceClient {
+    private static final Logger LOG = LoggerFactory.getLogger(VoxxedDayConferenceClient.class);
     private static final GenericType<List<VRoom>> GT_ROOM = new GenericType<>() {
     };
     private static final GenericType<List<VScheduleSlot>> GT_SCHEDULE_SLOT = new GenericType<>() {
@@ -64,14 +68,24 @@ public class VoxxedDayConferenceClient implements ConferenceClient {
 
     public VoxxedDayConferenceClient() {
         final ConferenceClientSettings cfpClientSettings = Configuration.getInstance().getConfigTyped(ConferenceClientSettings.CONFIG_KEY, ConferenceClientSettings.class);
-
         eventBaseUri = cfpClientSettings.eventUri();
+        LOG.info("Initialized conference client for: {}", eventBaseUri);
     }
 
     private void notImplemented() {
-        final UnsupportedOperationException uoe = new UnsupportedOperationException();
-        uoe.printStackTrace();
+        final var stackTrace = StackWalker
+                .getInstance(StackWalker.Option.SHOW_HIDDEN_FRAMES)
+                .walk(this::callerStack);
+        final var uoe = new UnsupportedOperationException("Not implemented");
+        uoe.setStackTrace(stackTrace);
+        LOG.error("Called unimplemented operation", uoe);
         throw uoe;
+    }
+
+    private StackTraceElement[] callerStack(Stream<StackWalker.StackFrame> stackFrameStream) {
+        return stackFrameStream.skip(1)
+                                .map(StackWalker.StackFrame::toStackTraceElement)
+                                .toArray(StackTraceElement[]::new);
     }
 
     @Override
