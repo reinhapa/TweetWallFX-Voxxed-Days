@@ -25,8 +25,8 @@
 apply plugin: 'application'
 
 //mainClassName = 'org.tweetwallfx.vdz.TestMain'
-//mainClassName = 'org.tweetwallfx.generic.Main'
-mainClassName = 'org.tweetwallfx.vdz.Main'
+mainClassName = 'org.tweetwallfx.generic.Main'
+//mainClassName = 'org.tweetwallfx.vdz.Main'
 //mainClassName = 'org.tweetwallfx.vdz.ScheduleTest'
 
 tasks.withType(JavaExec) {

@@ -142,4 +142,9 @@ public class VSpeaker implements Speaker {
     public Optional<Speaker> reload() {
         return Optional.of(this);
     }
+
+    @Override
+    public Optional<String> getCompany() {
+        return Optional.ofNullable(company);
+    }
 }

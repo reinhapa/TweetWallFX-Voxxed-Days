@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static org.tweetwallfx.util.ToString.createToString;
 import static org.tweetwallfx.util.ToString.mapOf;
@@ -131,6 +132,11 @@ public class VProposal implements Talk {
     @Override
     public SessionType getSessionType() {
         return sessionType;
+    }
+
+    @Override
+    public OptionalInt getFavoriteCount() {
+        return OptionalInt.empty();
     }
 
     @Override
