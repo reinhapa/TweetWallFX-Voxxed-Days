@@ -1,7 +1,4 @@
 {
-    "twitter": {
-        "extendedMode": true
-    },
     "tweetwall": {
         "query": "#vdz24 OR @VoxxedZurich OR #itWillBeFun",
         "title": "The JavaFX Tweetwall for Voxxed Days Zürich 2024!",
@@ -60,19 +57,19 @@
                 "config": {
                     "layoutX": 35,
                     "layoutY": 165,
-                    "width": 1860,
-                    "sessionHeight": 200,
+                    "width": 550,
+                    "sessionHeight": 160,
                     "showAvatar": true,
                     "avatarArcSize": 16,
                     "avatarSize": 60,
                     "avatarSpacing": 4,
                     "showFavourite": true,
-                    "stepDuration": 500,
+                    "stepDuration": 800,
                     "circularAvatar": true,
                     "compressedAvatars": true,
                     "compressedAvatarsLimit": 4,
                     "showTags": true,
-                    "columns": 4,
+                    "columns": 1,
                     "autoSeparateRoomTypes": true,
                     "showCompanyName": true
                 }
@@ -82,6 +79,12 @@
                 "config": {
                     "amount": 15,
                     "unit": "SECONDS"
+                }
+            },
+            {
+                "stepClassName": "org.tweetwallfx.controls.steps.NodeFadeOutStep",
+                "config": {
+                    "nodeSelector": "#scheduleNode"
                 }
             }
         ],
