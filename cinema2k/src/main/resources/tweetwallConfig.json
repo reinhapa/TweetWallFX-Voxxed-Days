@@ -6,7 +6,7 @@
     },
     "voxxedDayConferenceClient": {
         "eventUri": "https://vdz24.cfp.dev/api/public",
-        "votingResultsUri": null
+        "votingResultsUri": "https://vdz24.cfp.dev/api/public/ratings"
     },
     "filterchains": {
         "chains": {
@@ -53,6 +53,9 @@
     "stepEngine": {
         "steps": [
             {
+                "stepClassName": "org.tweetwallfx.vdz.steps.FlipInTweets"
+            },
+            {
                 "stepClassName": "org.tweetwallfx.conference.stepengine.steps.ShowSchedule",
                 "config": {
                     "layoutX": 35,
@@ -64,7 +67,7 @@
                     "avatarSize": 60,
                     "avatarSpacing": 4,
                     "showFavourite": true,
-                    "stepDuration": 800,
+                    "stepDuration": 500,
                     "circularAvatar": true,
                     "compressedAvatars": true,
                     "compressedAvatarsLimit": 4,

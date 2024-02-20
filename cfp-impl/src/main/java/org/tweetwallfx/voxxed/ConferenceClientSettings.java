@@ -39,9 +39,7 @@ public final class ConferenceClientSettings {
      */
     public static final String CONFIG_KEY = "voxxedDayConferenceClient";
     private String eventUri;
-    private String votingResultsUri;
     private String votingResultsToken;
-    private String votingResultsEvent;
 
     /**
      * Returns the Event URI from where all standard calls are executed.
@@ -63,25 +61,6 @@ public final class ConferenceClientSettings {
     }
 
     /**
-     * Returns the Query Uri from where voting results are retrieved.
-     *
-     * @return the Query Uri from where voting results are retrieved
-     */
-    public String votingResultsUri() {
-        return votingResultsUri;
-    }
-
-    /**
-     * Sets the Query Uri from where voting results are retrieved.
-     *
-     * @param votingResultsUri the Query Uri from where voting results are
-     * retrieved
-     */
-    public void setVotingResultsUri(final String votingResultsUri) {
-        this.votingResultsUri = votingResultsUri;
-    }
-
-    /**
      * {@return the Token required to retrieve voting results.}
      */
     public String votingResultsToken() {
@@ -98,30 +77,11 @@ public final class ConferenceClientSettings {
         this.votingResultsToken = votingResultsToken;
     }
 
-    /**
-     * {@return the voting results event id.}
-     */
-    public String votingResultsEvent() {
-        return votingResultsEvent;
-    }
-
-    /**
-     * Sets the voting results event id.
-     *
-     * @param votingResultsEvent the voting result event id
-     */
-    public void setVotingResultsEvent(String votingResultsEvent) {
-        Objects.requireNonNull(votingResultsEvent, "votingResultsEvent must not be null!");
-        this.votingResultsEvent = votingResultsEvent;
-    }
-
     @Override
     public String toString() {
         return createToString(this, map(
                 "eventBaseUri", eventUri(),
-                "votingResultsToken", votingResultsToken(),
-                "votingResultsUri", votingResultsUri(),
-                "votingResultsEvent", votingResultsEvent()
+                "votingResultsToken", votingResultsToken()
         ));
     }
 

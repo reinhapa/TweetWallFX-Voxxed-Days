@@ -225,9 +225,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
 
     private Optional<ConferenceClientSettings> getRatingClientEnabledConfig() {
         return Optional.of(config)
-                .filter(ccs -> Objects.nonNull(ccs.votingResultsUri()))
-                .filter(ccs -> Objects.nonNull(ccs.votingResultsToken()))
-                .filter(ccs -> Objects.nonNull(ccs.votingResultsEvent()));
+                .filter(ccs -> Objects.nonNull(ccs.votingResultsToken()));
     }
 
     private Map<WeekDay, List<RatedTalk>> getVotingResults() {
@@ -235,10 +233,8 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
 
         return getRatingClientEnabledConfig()
                 .flatMap(_ignored -> RestCallHelper.getOptionalResponse(
-                        config.votingResultsUri(),
-                        Map.of(
-                                "eventId", config.votingResultsEvent(),
-                                "publicToken", config.votingResultsToken())))
+                        eventBaseUri + "ratings/" + config.votingResultsToken(),
+                        Map.of()))
                 .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
                 .map(this::convertPublicEventStats)
                 .orElseGet(Map::of);
@@ -454,7 +450,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
         return null;
     }
 
-    protected static record WeekDay(String dayId) {
+    protected record WeekDay(String dayId) {
 
         static WeekDay of(String date) {
             return new WeekDay(LocalDate.parse(date).getDayOfWeek()
