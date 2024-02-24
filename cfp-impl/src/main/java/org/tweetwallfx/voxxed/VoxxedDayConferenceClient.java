@@ -200,8 +200,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
 
     @Override
     public List<RatedTalk> getRatedTalksOverall() {
-        return ratedTalks.getValue().entrySet().stream()
-                .map(Map.Entry::getValue)
+        return ratedTalks.getValue().values().stream()
                 .flatMap(List::stream)
                 .toList();
     }
@@ -239,7 +238,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                 final List<ScheduleSlot> scheduleSlots = talk.getScheduleSlots();
                 if (!scheduleSlots.isEmpty()) {
                     final WeekDay day = WeekDay.of(scheduleSlots.getFirst().getDateTimeRange().getStart());
-                    final Integer total = retrieveValue(ratingInfo, "ratingInfo", Number.class, Number::intValue, () -> 0);
+                    final Integer total = retrieveValue(ratingInfo, "totalRatings", Number.class, Number::intValue, () -> 0);
                     final Double avg = retrieveValue(ratingInfo, "avgRatings", Number.class, Number::doubleValue, () -> 0.0);
                     this.talkFavoriteCounts.put(talkId, total);
                     result.computeIfAbsent(day, key -> new ArrayList<>()).add(
@@ -277,10 +276,10 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                 .withFavoriteCount(retrieveValue(input, "totalFavourites", Number.class, Number::intValue, () -> 0))
                 .withRoom(rooms.get(alternatives(
                         // either by direct reference to the room ID
-                        retrieveValue(input, "roomId", Number.class, Number::toString, () -> null),
+                        retrieveValue(input, "roomId", Number.class, Number::toString),
                         // or by having the room object as value
                         retrieveValue(input, "room", Map.class,
-                                m -> retrieveValue(m, "id", Number.class, Number::toString, () -> null), Map::of))))
+                                m -> retrieveValue(m, "id", Number.class, Number::toString)))))
                 .withTalk(retrieveValue(input, "proposal", Map.class,
                         m -> convertTalk((Map<String, Object>) m), () -> null))
                 .build();
@@ -333,15 +332,15 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                 .withAudienceLevel(retrieveValue(input, "audienceLevel", String.class))
                 .withSessionType(sessionTypes.get(alternatives(
                         // either by direct reference to the session type ID
-                        retrieveValue(input, "sessionTypeId", Number.class, Number::toString, () -> ""),
+                        retrieveValue(input, "sessionTypeId", Number.class, Number::toString),
                         // or by having the session type object as value
                         retrieveValue(input, "sessionType", Map.class,
-                                m -> retrieveValue(m, "id", Number.class, Number::toString, () -> ""), Map::of))))
+                                m -> retrieveValue(m, "id", Number.class, Number::toString)))))
                 .withFavoriteCount(alternatives(
                         // if value is available from public event stats
                         talkFavoriteCounts.get(talkId),
                         // otherwise fall back to value from talk
-                        retrieveValue(input, "totalFavourites", Number.class, Number::intValue, () -> 0)))
+                        retrieveValue(input, "totalFavourites", Number.class, Number::intValue)))
                 .withLanguage(Locale.ENGLISH)
                 .withScheduleSlots(retrieveValue(input, "timeSlots", List.class,
                         list -> ((List<?>) list).stream()
@@ -360,10 +359,10 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                                 .toList(), List::of))
                 .withTrack(tracks.get(alternatives(
                         // either by direct reference to the track ID
-                        retrieveValue(input, "trackId", Number.class, Number::toString, () -> ""),
+                        retrieveValue(input, "trackId", Number.class, Number::toString),
                         // or by having the track object as value
                         retrieveValue(input, "track", Map.class,
-                                m -> retrieveValue(m, "id", Number.class, Number::toString, () -> ""), Map::of))))
+                                m -> retrieveValue(m, "id", Number.class, Number::toString)))))
                 .build();
     }
 
@@ -382,6 +381,11 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     }
 
     private static <T, R> R retrieveValue(final Map<String, Object> data, final String key, final Class<T> type,
+                                          final Function<T, R> converter) {
+        return retrieveValue(data, key, type, converter, () -> null);
+    }
+
+        private static <T, R> R retrieveValue(final Map<String, Object> data, final String key, final Class<T> type,
                                           final Function<T, R> converter, final Supplier<R> defaultValueSupplier) {
         final T t = retrieveValue(data, key, type);
         return null == t

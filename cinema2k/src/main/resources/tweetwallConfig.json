@@ -60,7 +60,7 @@
                 "config": {
                     "layoutX": 35,
                     "layoutY": 165,
-                    "width": 550,
+                    "width": 800,
                     "sessionHeight": 160,
                     "showAvatar": true,
                     "avatarArcSize": 16,
@@ -120,10 +120,19 @@
         ],
         "dataProviderSettings": [
             {
-                "dataProviderClassName": "org.tweetwallfx.devoxx.cfp.stepengine.dataprovider.ScheduleDataProvider",
+                "dataProviderClassName": "org.tweetwallfx.conference.stepengine.dataprovider.ScheduleDataProvider",
                 "config": {
                     "initialDelay": 0,
                     "scheduleDuration": 900
+                }
+            },
+            {
+                "dataProviderClassName": "org.tweetwallfx.conference.stepengine.dataprovider.TopTalksTodayDataProvider",
+                "config": {
+                    "initialDelay": 0,
+                    "scheduleDuration": 900,
+                    "minTotalVotes": 1,
+                    "nrVotes": 4
                 }
             },
             {
