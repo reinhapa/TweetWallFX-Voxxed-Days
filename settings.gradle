@@ -27,7 +27,7 @@ rootProject.name='tweetwallfx-voxxed-days'
 include ':cfp-impl'
 include ':cinema2k'
 
-def tweetwallFxProject = new File(rootDir, '../TweetWallFX')
+def tweetwallFxProject = new File(rootProject.projectDir, '../TweetWallFX')
 if (tweetwallFxProject.isDirectory()) {
     includeBuild tweetwallFxProject
 }

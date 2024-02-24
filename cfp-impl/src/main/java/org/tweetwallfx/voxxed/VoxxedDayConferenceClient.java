@@ -23,10 +23,14 @@
  */
 package org.tweetwallfx.voxxed;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,7 +39,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.random.RandomGenerator;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import jakarta.ws.rs.core.GenericType;
@@ -176,50 +180,29 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
 
     @Override
     public Optional<RatingClient> getRatingClient() {
-        return Optional.empty();
+        return Optional.of(this);
     }
 
     @Override
     public List<RatedTalk> getRatedTalks(final String conferenceDay) {
-        if (Boolean.getBoolean("org.tweetwallfx.conference.randomRatedTalks")) {
-            LOG.debug("######## randomizedRatedTalksPerDay");
-            return randomizedRatedTalks();
-        } else {
-            final Map<WeekDay, List<RatedTalk>> votingResults = ratedTalks.getValue();
-
-            return votingResults.entrySet().stream()
-                    .filter(e -> e.getKey().dayId().equals(conferenceDay))
-                    .map(Map.Entry::getValue)
-                    .findFirst()
-                    .orElseGet(() -> {
-                        LOG.warn(
-                                "Lookup of voting results for conferenceDay='{}' failed among the following keySet: {}",
-                                conferenceDay, votingResults.keySet());
-                        return List.of();
-                    });
-        }
+        final Map<WeekDay, List<RatedTalk>> votingResults = ratedTalks.getValue();
+        return votingResults.entrySet().stream()
+                .filter(e -> e.getKey().dayId().equals(conferenceDay))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseGet(() -> {
+                    LOG.warn(
+                            "Lookup of voting results for conferenceDay='{}' failed among the following keySet: {}",
+                            conferenceDay, votingResults.keySet());
+                    return List.of();
+                });
     }
 
     @Override
     public List<RatedTalk> getRatedTalksOverall() {
-        if (Boolean.getBoolean("org.tweetwallfx.conference.randomRatedTalks")) {
-            LOG.debug("######## randomizedRatedTalksWeek");
-            return randomizedRatedTalks();
-        } else {
-            return ratedTalks.getValue().entrySet().stream()
-                    .map(Map.Entry::getValue)
-                    .flatMap(List::stream)
-                    .toList();
-        }
-    }
-
-    private List<RatedTalk> randomizedRatedTalks() {
-        LOG.debug("######## randomizedRatedTalks");
-        return RestCallHelper.readOptionalFrom(eventBaseUri + "talks", listOfMaps())
-                .orElse(List.of())
-                .stream()
-                .filter(talk -> RandomGenerator.getDefault().nextBoolean())
-                .map(this::convertTalkToRatedTalk)
+        return ratedTalks.getValue().entrySet().stream()
+                .map(Map.Entry::getValue)
+                .flatMap(List::stream)
                 .toList();
     }
 
@@ -229,13 +212,10 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     }
 
     private Map<WeekDay, List<RatedTalk>> getVotingResults() {
-        LOG.info("Loading PublicEventStats", new IllegalArgumentException("Loading PublicEventStats"));
-
         return getRatingClientEnabledConfig()
                 .flatMap(_ignored -> RestCallHelper.getOptionalResponse(
-                        eventBaseUri + "ratings/" + config.votingResultsToken(),
-                        Map.of()))
-                .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
+                        eventBaseUri + "ratings/" + config.votingResultsToken()))
+                .flatMap(r -> RestCallHelper.readOptionalFrom(r, listOfMaps()))
                 .map(this::convertPublicEventStats)
                 .orElseGet(Map::of);
     }
@@ -250,61 +230,37 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
         };
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<WeekDay, List<RatedTalk>> convertPublicEventStats(final Map<String, Object> input) {
+    private Map<WeekDay, List<RatedTalk>> convertPublicEventStats(final List<Map<String, Object>> input) {
         LOG.debug("Converting PublicEventStats: {}", input);
-
-        final Map<String, Integer> tfcs = retrieveValue(input, "perTalkStats", List.class,
-                perTalkStatsList -> ((List<?>) perTalkStatsList).stream()
-                        .map(o -> (Map<String, Object>) o)
-                        .collect(Collectors.toMap(
-                                perTalkStats -> retrieveValue(perTalkStats, "talkId", String.class),
-                                perTalkStats -> retrieveValue(perTalkStats, "totalFavoritesCount", Number.class,
-                                        Number::intValue))));
-
-        if (null != tfcs && !tfcs.isEmpty()) {
-            this.talkFavoriteCounts.putAll(tfcs);
-            LOG.info("Updated talkFavoriteCounts to: {}", talkFavoriteCounts);
+        final Map<WeekDay, List<RatedTalk>> result = new HashMap<>();
+        for (Map<String, Object> ratingInfo : input) {
+            final String talkId = retrieveValue(ratingInfo, "id", BigDecimal.class, BigDecimal::toString, () -> "");
+            getTalk(talkId).ifPresent(talk -> {
+                final List<ScheduleSlot> scheduleSlots = talk.getScheduleSlots();
+                if (!scheduleSlots.isEmpty()) {
+                    final WeekDay day = WeekDay.of(scheduleSlots.getFirst().getDateTimeRange().getStart());
+                    final Integer total = retrieveValue(ratingInfo, "ratingInfo", Number.class, Number::intValue, () -> 0);
+                    final Double avg = retrieveValue(ratingInfo, "avgRatings", Number.class, Number::doubleValue, () -> 0.0);
+                    this.talkFavoriteCounts.put(talkId, total);
+                    result.computeIfAbsent(day, key -> new ArrayList<>()).add(
+                            RatedTalkImpl.builder()
+                                    .withAverageRating(avg)
+                                    .withTotalRating(total)
+                                    .withTalk(talk)
+                                    .build());
+                }
+            });
         }
-
-        return retrieveValue(input, "dailyTalksStats", List.class,
-                dailyTalksStatsList -> ((List<?>) dailyTalksStatsList).stream()
-                        .map(o -> (Map<String, Object>) o)
-                        .collect(Collectors.toMap(
-                                dailyStats -> retrieveValue(dailyStats, "date", String.class, WeekDay::of),
-                                dailyStats -> retrieveValue(dailyStats, "topTalks", List.class,
-                                        topTalksList -> ((List<?>) topTalksList).stream()
-                                                .map(o -> (Map<String, Object>) o)
-                                                .map(this::convertRatedTalk)
-                                                .toList()))));
-    }
-
-    private RatedTalk convertTalkToRatedTalk(final Map<String, Object> input) {
-        LOG.debug("Converting Talk to RatedTalk: {}", input);
-        return RatedTalkImpl.builder()
-                .withAverageRating(RandomGenerator.getDefault().nextDouble(5))
-                .withTotalRating(RandomGenerator.getDefault().nextInt(200))
-                .withTalk(convertTalk(input))
-                .build();
-    }
-
-    private RatedTalk convertRatedTalk(final Map<String, Object> input) {
-        LOG.debug("Converting to RatedTalk: {}", input);
-        return RatedTalkImpl.builder()
-                .withAverageRating(retrieveValue(input, "averageRating", Number.class, Number::doubleValue))
-                .withTotalRating(retrieveValue(input, "numberOfVotes", Number.class, Number::intValue))
-                .withTalk(retrieveValue(input, "talkId", String.class,
-                        talkId -> getTalk(talkId).get()))
-                .build();
+        return result;
     }
 
     private Room convertRoom(final Map<String, Object> input) {
         LOG.debug("Converting to Room: {}", input);
         return RoomImpl.builder()
-                .withId(retrieveValue(input, "id", Number.class, Number::toString))
+                .withId(retrieveValue(input, "id", Number.class, Number::toString, () -> ""))
                 .withName(retrieveValue(input, "name", String.class))
-                .withCapacity(retrieveValue(input, "capacity", Number.class, Number::intValue))
-                .withWeight(retrieveValue(input, "weight", Number.class, Number::doubleValue))
+                .withCapacity(retrieveValue(input, "capacity", Number.class, Number::intValue, () -> 0))
+                .withWeight(retrieveValue(input, "weight", Number.class, Number::doubleValue, () -> 0.0))
                 .build();
     }
 
@@ -312,21 +268,21 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     private ScheduleSlot convertScheduleSlot(final Map<String, Object> input) {
         LOG.debug("Converting to ScheduleSlot: {}", input);
         return ScheduleSlotImpl.builder()
-                .withId(retrieveValue(input, "id", Number.class, Number::toString))
+                .withId(retrieveValue(input, "id", Number.class, Number::toString, () -> ""))
                 .withOverflow(retrieveValue(input, "overflow", Boolean.class))
                 .withDateTimeRange(DateTimeRangeImpl.builder()
-                        .withEnd(retrieveValue(input, "toDate", String.class, Instant::parse))
-                        .withStart(retrieveValue(input, "fromDate", String.class, Instant::parse))
+                        .withEnd(retrieveValue(input, "toDate", String.class, Instant::parse, () -> null))
+                        .withStart(retrieveValue(input, "fromDate", String.class, Instant::parse, () -> null))
                         .build())
-                .withFavoriteCount(retrieveValue(input, "totalFavourites", Number.class, Number::intValue))
+                .withFavoriteCount(retrieveValue(input, "totalFavourites", Number.class, Number::intValue, () -> 0))
                 .withRoom(rooms.get(alternatives(
                         // either by direct reference to the room ID
-                        retrieveValue(input, "roomId", Number.class, Number::toString),
+                        retrieveValue(input, "roomId", Number.class, Number::toString, () -> null),
                         // or by having the room object as value
                         retrieveValue(input, "room", Map.class,
-                                m -> retrieveValue(m, "id", Number.class, Number::toString)))))
+                                m -> retrieveValue(m, "id", Number.class, Number::toString, () -> null), Map::of))))
                 .withTalk(retrieveValue(input, "proposal", Map.class,
-                        m -> convertTalk((Map<String, Object>) m)))
+                        m -> convertTalk((Map<String, Object>) m), () -> null))
                 .build();
     }
 
@@ -335,8 +291,8 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
         return SessionTypeImpl.builder()
                 .withColor(retrieveValue(input, "cssColor", String.class))
                 .withDescription(retrieveValue(input, "description", String.class))
-                .withDuration(retrieveValue(input, "duration", Number.class, n -> Duration.ofMinutes(n.longValue())))
-                .withId(retrieveValue(input, "id", Number.class, Number::toString))
+                .withDuration(retrieveValue(input, "duration", Number.class, n -> Duration.ofMinutes(n.longValue()), () -> Duration.ZERO))
+                .withId(retrieveValue(input, "id", Number.class, Number::toString, () -> ""))
                 .withName(retrieveValue(input, "name", String.class))
                 .withPause(retrieveValue(input, "pause", Boolean.class))
                 .build();
@@ -346,7 +302,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     private Speaker convertSpeaker(final Map<String, Object> input) {
         LOG.debug("Converting to Speaker: {}", input);
         final SpeakerImpl.Builder builder = SpeakerImpl.builder()
-                .withId(retrieveValue(input, "id", Number.class, Number::toString))
+                .withId(retrieveValue(input, "id", Number.class, Number::toString, () -> ""))
                 .withFirstName(retrieveValue(input, "firstName", String.class))
                 .withLastName(retrieveValue(input, "lastName", String.class))
                 .withFullName(String.format("%s %s",
@@ -358,7 +314,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                         list -> ((List<?>) list).stream()
                                 .map(o -> (Map<String, Object>) o)
                                 .map(this::convertTalk)
-                                .toList()));
+                                .toList(), List::of));
 
         processValue(
                 retrieveValue(input, "twitterHandle", String.class),
@@ -370,44 +326,44 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     @SuppressWarnings("unchecked")
     private Talk convertTalk(final Map<String, Object> input) {
         LOG.debug("Converting to Talk: {}", input);
-        String talkId = retrieveValue(input, "id", Number.class, Number::toString);
+        String talkId = retrieveValue(input, "id", Number.class, Number::toString, () -> "");
         return TalkImpl.builder()
                 .withId(talkId)
                 .withName(retrieveValue(input, "title", String.class))
                 .withAudienceLevel(retrieveValue(input, "audienceLevel", String.class))
                 .withSessionType(sessionTypes.get(alternatives(
                         // either by direct reference to the session type ID
-                        retrieveValue(input, "sessionTypeId", Number.class, Number::toString),
+                        retrieveValue(input, "sessionTypeId", Number.class, Number::toString, () -> ""),
                         // or by having the session type object as value
                         retrieveValue(input, "sessionType", Map.class,
-                                m -> retrieveValue(m, "id", Number.class, Number::toString)))))
+                                m -> retrieveValue(m, "id", Number.class, Number::toString, () -> ""), Map::of))))
                 .withFavoriteCount(alternatives(
                         // if value is available from public event stats
                         talkFavoriteCounts.get(talkId),
                         // otherwise fall back to value from talk
-                        retrieveValue(input, "totalFavourites", Number.class, Number::intValue)))
+                        retrieveValue(input, "totalFavourites", Number.class, Number::intValue, () -> 0)))
                 .withLanguage(Locale.ENGLISH)
                 .withScheduleSlots(retrieveValue(input, "timeSlots", List.class,
                         list -> ((List<?>) list).stream()
                                 .map(o -> (Map<String, Object>) o)
                                 .map(this::convertScheduleSlot)
-                                .toList()))
+                                .toList(), List::of))
                 .withSpeakers(retrieveValue(input, "speakers", List.class,
                         list -> ((List<?>) list).stream()
                                 .map(o -> (Map<String, Object>) o)
                                 .map(this::convertSpeaker)
-                                .toList()))
+                                .toList(), List::of))
                 .withTags(retrieveValue(input, "tags", List.class,
                         list -> ((List<?>) list).stream()
                                 .map(o -> (Map<String, Object>) o)
                                 .map(m -> retrieveValue(m, "name", String.class))
-                                .toList()))
+                                .toList(), List::of))
                 .withTrack(tracks.get(alternatives(
                         // either by direct reference to the track ID
-                        retrieveValue(input, "trackId", Number.class, Number::toString),
+                        retrieveValue(input, "trackId", Number.class, Number::toString, () -> ""),
                         // or by having the track object as value
                         retrieveValue(input, "track", Map.class,
-                                m -> retrieveValue(m, "id", Number.class, Number::toString)))))
+                                m -> retrieveValue(m, "id", Number.class, Number::toString, () -> ""), Map::of))))
                 .build();
     }
 
@@ -416,7 +372,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
         return TrackImpl.builder()
                 .withAvatarURL(retrieveValue(input, "imageURL", String.class))
                 .withDescription(retrieveValue(input, "description", String.class))
-                .withId(retrieveValue(input, "id", Number.class, Number::toString))
+                .withId(retrieveValue(input, "id", Number.class, Number::toString, () -> ""))
                 .withName(retrieveValue(input, "name", String.class))
                 .build();
     }
@@ -426,10 +382,10 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     }
 
     private static <T, R> R retrieveValue(final Map<String, Object> data, final String key, final Class<T> type,
-                                          final Function<T, R> converter) {
+                                          final Function<T, R> converter, final Supplier<R> defaultValueSupplier) {
         final T t = retrieveValue(data, key, type);
         return null == t
-                ? null
+                ? defaultValueSupplier.get()
                 : converter.apply(t);
     }
 
@@ -451,9 +407,13 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     }
 
     protected record WeekDay(String dayId) {
-
         static WeekDay of(String date) {
             return new WeekDay(LocalDate.parse(date).getDayOfWeek()
+                    .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                    .toLowerCase(Locale.ENGLISH));
+        }
+        static WeekDay of(Instant date) {
+            return new WeekDay(LocalDate.ofInstant(date, ZoneOffset.UTC).getDayOfWeek()
                     .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
                     .toLowerCase(Locale.ENGLISH));
         }
