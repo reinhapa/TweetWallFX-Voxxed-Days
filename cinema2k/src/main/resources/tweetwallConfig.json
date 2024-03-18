@@ -53,7 +53,14 @@
     "stepEngine": {
         "steps": [
             {
-                "stepClassName": "org.tweetwallfx.vdz.steps.FlipInTweets"
+                "stepClassName": "org.tweetwallfx.conference.stepengine.steps.ShowPosts",
+                "config": {
+                    "layoutX": 1000,
+                    "layoutY": 165,
+                    "width": 800,
+                    "postHeight": 160,
+                    "columns": 1
+                }
             },
             {
                 "stepClassName": "org.tweetwallfx.conference.stepengine.steps.ShowSchedule",
@@ -115,6 +122,12 @@
                 "stepClassName": "org.tweetwallfx.controls.steps.NodeFadeOutStep",
                 "config": {
                     "nodeSelector": "#topRatedeNode"
+                }
+            },
+            {
+                "stepClassName": "org.tweetwallfx.controls.steps.NodeFadeOutStep",
+                "config": {
+                    "nodeSelector": "#postsNode"
                 }
             }
         ],

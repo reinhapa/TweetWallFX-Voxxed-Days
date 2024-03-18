@@ -274,3 +274,11 @@
     -fx-background-radius: 5 5 5 5;
     -fx-border-insets: -1 -4 -1 -4;
 }
+
+.posts > .title {
+    -fx-background-color: devoxx_gradient_opaque;
+    -fx-background-radius: 10;
+    -fx-text-fill: blanchedalmond;
+    -fx-font-size: 20pt;
+    -fx-font-weight: bold;
+}
