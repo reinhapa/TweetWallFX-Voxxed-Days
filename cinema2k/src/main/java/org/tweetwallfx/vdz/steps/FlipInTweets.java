@@ -94,6 +94,7 @@ public class FlipInTweets implements Step {
                         Bindings.multiply(Math.sin(Math.toRadians(tweetList.getRotate())) * 0.5,
                                 tweetList.heightProperty())));
 
+        tweetList.getChildren().clear();
         List<Tweet> tweets = dataProvider.getTweets();
         for (int i = 0; i < Math.min(tweets.size(), tweets.size()); i++) {
             HBox tweet = createSingleTweetDisplay(tweets.get(i), userImageProvider, maxWidth[i]);
