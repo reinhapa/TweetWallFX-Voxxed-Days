@@ -76,8 +76,8 @@ tasks.register('debug', JavaExec) {
 
 dependencies {
     implementation project(':cfp-impl')
-    implementation 'org.openjfx:javafx-base:22-ea+28:' + javaFxPlatform
-    implementation 'org.openjfx:javafx-graphics:22-ea+28:' + javaFxPlatform
+    implementation 'org.openjfx:javafx-base:22:' + javaFxPlatform
+    implementation 'org.openjfx:javafx-graphics:22:' + javaFxPlatform
     implementation 'org.tweetwallfx:tweetwallfx-2d:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-conference-stepengine:' + versionTweetwallFX

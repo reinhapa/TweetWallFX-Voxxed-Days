@@ -126,10 +126,10 @@ allprojects {
         dependencies {
             implementation 'org.slf4j:slf4j-api:2.0.12'
 
-            javafx 'org.openjfx:javafx-base:22-ea+28:' + javaFxPlatform
-            javafx 'org.openjfx:javafx-graphics:22-ea+28:' + javaFxPlatform
-            javafx 'org.openjfx:javafx-fxml:22-ea+28:' + javaFxPlatform
-            javafx 'org.openjfx:javafx-controls:22-ea+28:' + javaFxPlatform
+            javafx 'org.openjfx:javafx-base:22:' + javaFxPlatform
+            javafx 'org.openjfx:javafx-graphics:22:' + javaFxPlatform
+            javafx 'org.openjfx:javafx-fxml:22:' + javaFxPlatform
+            javafx 'org.openjfx:javafx-controls:22:' + javaFxPlatform
 
             jaxb 'jakarta.activation:jakarta.activation-api:2.1.2'
             jaxb 'org.eclipse.angus:angus-activation:2.0.1'
