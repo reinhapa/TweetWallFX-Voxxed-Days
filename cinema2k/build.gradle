@@ -76,8 +76,8 @@ tasks.register('debug', JavaExec) {
 
 dependencies {
     implementation project(':cfp-impl')
-    implementation 'org.openjfx:javafx-base:22:' + javaFxPlatform
-    implementation 'org.openjfx:javafx-graphics:22:' + javaFxPlatform
+    implementation 'org.openjfx:javafx-base:23.0.1:' + javaFxPlatform
+    implementation 'org.openjfx:javafx-graphics:23.0.1:' + javaFxPlatform
     implementation 'org.tweetwallfx:tweetwallfx-2d:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-configuration:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-conference-stepengine:' + versionTweetwallFX
@@ -93,7 +93,7 @@ dependencies {
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-twitter4j:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-mock:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-mastodon4j:' + versionTweetwallFX
-    implementation 'org.apache.logging.log4j:log4j-core:2.22.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:2.24.1'
 }

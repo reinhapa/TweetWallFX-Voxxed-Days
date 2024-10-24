@@ -1,10 +1,14 @@
 version: 2
 updates:
 - package-ecosystem: "github-actions"
-  directory: "/"
+  directories: 
+    - "/"
   schedule:
-    interval: "weekly"
+    interval: "daily"
 - package-ecosystem: "gradle"
-  directory: "/"
+  directories: 
+    - "/"
+    - "/cfp-impl"
+    - "/cinema2k"
   schedule:
-    interval: "weekly"
+    interval: "daily"
