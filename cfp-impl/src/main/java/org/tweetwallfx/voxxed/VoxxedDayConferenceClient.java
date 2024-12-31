@@ -68,6 +68,8 @@ import org.tweetwallfx.conference.spi.util.RestCallHelper;
 import org.tweetwallfx.config.Configuration;
 import org.tweetwallfx.util.ExpiringValue;
 
+import static java.util.function.Function.identity;
+
 public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient {
     private static final Logger LOG = LoggerFactory.getLogger(VoxxedDayConferenceClient.class);
 
@@ -87,19 +89,19 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                 .orElse(List.of())
                 .stream()
                 .map(this::convertSessionType)
-                .collect(Collectors.toMap(Identifiable::getId, Function.identity()));
+                .collect(Collectors.toMap(Identifiable::getId, identity()));
         LOG.info("SessionType IDs: {}", sessionTypes.keySet());
         this.rooms = RestCallHelper.readOptionalFrom(eventBaseUri + "rooms", listOfMaps())
                 .orElse(List.of())
                 .stream()
                 .map(this::convertRoom)
-                .collect(Collectors.toMap(Identifiable::getId, Function.identity()));
+                .collect(Collectors.toMap(Identifiable::getId, identity()));
         LOG.info("Room IDs: {}", rooms.keySet());
         this.tracks = RestCallHelper.readOptionalFrom(eventBaseUri + "tracks", listOfMaps())
                 .orElse(List.of())
                 .stream()
                 .map(this::convertTrack)
-                .collect(Collectors.toMap(Identifiable::getId, Function.identity()));
+                .collect(Collectors.toMap(Identifiable::getId, identity()));
         LOG.info("Track IDs: {}", tracks.keySet());
         this.ratedTalks = new ExpiringValue<>(this::getVotingResults, Duration.ofSeconds(20));
         // trigger initialization of ratedTalks
@@ -308,7 +310,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                         retrieveValue(input, "firstName", String.class),
                         retrieveValue(input, "lastName", String.class)))
                 .withCompany(retrieveValue(input, "company", String.class))
-                .withAvatarURL(retrieveValue(input, "imageUrl", String.class))
+                .withAvatarURL(retrieveValue(input, "imageUrl", String.class, identity(), this::defaultImageUrl))
                 .withTalks(retrieveValue(input, "talks", List.class,
                         list -> ((List<?>) list).stream()
                                 .map(o -> (Map<String, Object>) o)
@@ -320,6 +322,10 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
                 twitterHandle -> builder.addSocialMedia("twitter", twitterHandle));
 
         return builder.build();
+    }
+
+    private String defaultImageUrl() {
+        return "https://placehold.co/400.png?text=?";
     }
 
     @SuppressWarnings("unchecked")
@@ -369,7 +375,7 @@ public class VoxxedDayConferenceClient implements ConferenceClient, RatingClient
     private Track convertTrack(final Map<String, Object> input) {
         LOG.debug("Converting to Track: {}", input);
         return TrackImpl.builder()
-                .withAvatarURL(retrieveValue(input, "imageURL", String.class))
+                .withAvatarURL(retrieveValue(input, "imageURL", String.class, identity(), this::defaultImageUrl))
                 .withDescription(retrieveValue(input, "description", String.class))
                 .withId(retrieveValue(input, "id", Number.class, Number::toString, () -> ""))
                 .withName(retrieveValue(input, "name", String.class))

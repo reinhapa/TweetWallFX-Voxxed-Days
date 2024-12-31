@@ -41,7 +41,7 @@ tasks.withType(JavaExec) {
 tasks.register('runFixed', JavaExec) {
     dependsOn classes
     classpath sourceSets.main.runtimeClasspath
-    jvmArgs '-Dorg.tweetwallfx.scheduledata.day=thursday'
+    jvmArgs '-Dorg.tweetwallfx.scheduledata.day=tuesday'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.proposal=CTH-5247'
     jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:00:00.0+01:00'
 //    jvmArgs '-Dorg.tweetwallfx.scheduledata.time=09:15:00.0+02:00'
