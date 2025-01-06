@@ -33,6 +33,6 @@ dependencies {
     runtimeOnly 'org.glassfish.jersey.media:jersey-media-json-jackson:3.1.9'
     runtimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2'
 
-    testImplementation 'ch.qos.logback:logback-classic:1.5.15'
+    testImplementation 'ch.qos.logback:logback-classic:1.5.16'
     testImplementation 'org.assertj:assertj-core:3.27.1'
 }
