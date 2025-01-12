@@ -125,31 +125,6 @@
     -fx-fill: #060b33; /* derive(blanchedalmond, -5%);    */
 }
 
-/*.tweetFlow {
-    -fx-font-family: 'Twitter Color Emoji';
-    -fx-font-size: 1.5em;
-    -fx-fill: derive(blanchedalmond, -5%);
-}*/
-
-.tweetDisplay {
-    -fx-background-color: devoxx_gradient;
-    -fx-background-radius: 5;
-    /*-fx-background-insets: -5pt;*/
-    /*    -fx-border-color: black;
-        -fx-border-style: solid;
-        -fx-border-width: 0pt 0pt 1pt 0pt;
-        -fx-border-radius: 5pt;
-        -fx-border-insets: 5pt;*/
-}
-
-.tweetProfileImage {
-    /*    -fx-border-color: #060b33;
-        -fx-border-style: solid;*/
-    /*    -fx-border-width: 0pt 0pt 0pt 0pt;
-        -fx-border-radius: 2pt;
-        -fx-border-insets: 2pt;*/
-}
-
 .scheduleSession {
     -fx-background-color: devoxx_gradient_opaque;
     -fx-background-radius: 5;
@@ -281,4 +256,23 @@
     -fx-text-fill: blanchedalmond;
     -fx-font-size: 20pt;
     -fx-font-weight: bold;
+}
+
+.postDisplay {
+    -fx-background-color: devoxx_gradient;
+    -fx-background-radius: 5;
+}
+
+.postFlow {
+    -fx-font: 1.2em 'Twitter Color Emoji';
+    -fx-text-fill: blanchedalmond;
+    -fx-font-size: 8pt;
+}
+
+.postUserName {
+    -fx-text-fill: blanchedalmond;
+    -fx-font-size: 11pt;
+}
+
+.postUserImage {
 }
