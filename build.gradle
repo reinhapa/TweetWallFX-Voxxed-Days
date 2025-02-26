@@ -123,7 +123,7 @@ allprojects {
         }
 
         dependencies {
-            implementation 'org.slf4j:slf4j-api:2.0.16'
+            implementation 'org.slf4j:slf4j-api:2.0.17'
 
             javafx 'org.openjfx:javafx-base:23.0.1:' + javaFxPlatform
             javafx 'org.openjfx:javafx-graphics:23.0.1:' + javaFxPlatform
