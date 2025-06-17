@@ -94,7 +94,7 @@ dependencies {
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-twitter4j:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-mock:' + versionTweetwallFX
     implementation 'org.tweetwallfx:tweetwallfx-tweet-impl-mastodon4j:' + versionTweetwallFX
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+    implementation 'org.apache.logging.log4j:log4j-core:2.25.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:2.24.3'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:2.25.0'
 }
