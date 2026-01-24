@@ -34,5 +34,5 @@ dependencies {
     runtimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.0'
 
     testImplementation 'ch.qos.logback:logback-classic:1.5.25'
-    testImplementation 'org.assertj:assertj-core:3.27.6'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
 }
